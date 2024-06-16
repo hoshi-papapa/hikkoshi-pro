@@ -15,7 +15,10 @@ return new class extends Migration
     {
         Schema::create('template_tasks', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            $table->string('title'); //題名
+            $table->text('description')->nullable(); //テキスト
+            $table->integer('days_offset'); //タスクを何日前・後までやるか
+            $table->timestamps(); //作成日時と更新日時
         });
     }
 
