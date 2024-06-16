@@ -14,6 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('sub_users', function (Blueprint $table) {
+            $table->id();
             $table->unsignedBigInteger('main_user_id'); //メインユーザーID
             $table->string('nickname'); //ニックネーム
             $table->string('user_image_path')->nullable(); //ユーザー画像パス
