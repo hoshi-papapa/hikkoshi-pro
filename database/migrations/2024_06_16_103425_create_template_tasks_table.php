@@ -17,7 +17,8 @@ return new class extends Migration
             $table->id();
             $table->string('title'); //題名
             $table->text('description')->nullable(); //テキスト
-            $table->integer('days_offset'); //タスクを何日前・後までやるか
+            $table->integer('start_date_offset'); //タスクを何日前・後までやるか
+            $table->integer('end_date_offset'); //タスクを何日前・後までやるか
             $table->timestamps(); //作成日時と更新日時
         });
     }

@@ -19,6 +19,7 @@ return new class extends Migration
             $table->text('description')->nullable(); // テキスト
             $table->date('start_date'); // タスク開始日
             $table->date('end_date'); // タスク終了日
+            $table->boolean('completed'); //タスクが完了したかどうか
             $table->boolean('is_template_task'); // テンプレートタスクかどうか
             $table->unsignedBigInteger('template_task_id'); // テンプレートタスクID
             $table->timestamps();
