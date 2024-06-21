@@ -15,7 +15,8 @@
 
         {{-- 独自のCSS --}}
         <link href="{{ asset('css/hikkoshi-pro.css') }}" rel="stylesheet"></head>
-    <body class="font-sans antialiased">
+
+    {{-- <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100">
             @include('layouts.navigation')
 
@@ -32,6 +33,20 @@
             <main>
                 {{ $slot }}
             </main>
+        </div>
+    </body> --}}
+
+    <body>
+        <div id="app">
+            @component('components.header')
+            @endcomponent
+
+            <main class="py-1" style="min-height: calc(100vh - 9.6rem);">
+                @yield('content')
+            </main>
+
+            @component('components.footer')
+            @endcomponent
         </div>
     </body>
 </html>

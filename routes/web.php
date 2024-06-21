@@ -1,6 +1,11 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\SubUserController;
+use App\Http\Controllers\TaskController;
+use App\Http\Controllers\TemplateTaskController;
+use App\Models\TemplateTask;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -28,4 +33,9 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+Route::resource('users', UserController::class);
+Route::resource('subusers', SubUserController::class);
+Route::resource('templatetasks', TemplateTaskController::class);
+Route::resource('tasks', TaskController::class);
+
+require __DIR__ . '/auth.php';
