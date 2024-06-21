@@ -8,4 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 class SubUser extends Model
 {
     use HasFactory;
+
+    public function tasks()
+    {
+        return $this->belongsToMany(Task::class)->withTimestamps();
+    }
+
+    public function users()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
