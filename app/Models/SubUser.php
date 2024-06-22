@@ -9,9 +9,11 @@ class SubUser extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['main_user_id', 'nickname', 'user_image_path'];
+
     public function tasks()
     {
-        return $this->belongsToMany(Task::class)->withTimestamps();
+        return $this->belongsToMany(Task::class, 'subuser_tasks')->withTimestamps();
     }
 
     public function users()

@@ -9,6 +9,13 @@
             <x-input-error :messages="$errors->get('name')" class="mt-2" />
         </div>
 
+        <!-- 引越予定日 -->
+        <div class="mt-4">
+            <x-input-label for="planned_moving_date" :value="__('引越予定日')" />
+            <x-text-input id="planned_moving_date" class="block mt-1 w-full" type="date" name="planned_moving_date" :value="old('planned_moving_date')" required autofocus autocomplete="planned_moving_date" />
+            <x-input-error :messages="$errors->get('planned_moving_date')" class="mt-2" />
+        </div>
+
         <!-- 電話番号 -->
         <div class="mt-4">
             <x-input-label for="phone_number" :value="__('電話番号')" />

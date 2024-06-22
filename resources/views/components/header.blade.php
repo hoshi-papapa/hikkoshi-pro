@@ -10,7 +10,12 @@
         
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav ms-auto">
-                <li class="nav-item me-3 text-dark">
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit">Logout</button>
+                </form>
+
+                {{-- <li class="nav-item me-3 text-dark">
                     <a href="{{route('favorite.index') }}" class="text-dark">
                         <i class="fa-solid fa-heart"></i>
                     </a>
@@ -24,7 +29,7 @@
                     <a href="{{route('mypage') }}" class="fw-bold text-dark" style="text-decoration: none;">
                         マイページ
                     </a>
-                </li>
+                </li> --}}
             </ul>
         </div>
     </div>

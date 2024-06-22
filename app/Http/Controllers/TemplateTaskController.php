@@ -17,6 +17,7 @@ class TemplateTaskController extends Controller
     {
         $templateTasks = TemplateTask::all();
 
+        dd($templateTasks);
         return view('templatetasks.index', compact('templateTasks'));
     }
 

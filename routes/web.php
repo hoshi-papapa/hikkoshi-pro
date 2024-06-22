@@ -1,11 +1,11 @@
 <?php
 
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SubUserController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\TemplateTaskController;
-use App\Models\TemplateTask;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,6 +18,8 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+
+Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 
 Route::get('/', function () {
     return view('welcome');
@@ -32,10 +34,14 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+Route::get('/templatetasks/test', function () {
+    $templateTasks = App\Models\TemplateTask::all();
+    return view('templatetasks.index', compact('templateTasks'));
+});
 
 Route::resource('users', UserController::class);
 Route::resource('subusers', SubUserController::class);
-Route::resource('templatetasks', TemplateTaskController::class);
+Route::resource('templatetasks', TemplateTaskController::class)->only(['index']);
 Route::resource('tasks', TaskController::class);
 
 require __DIR__ . '/auth.php';

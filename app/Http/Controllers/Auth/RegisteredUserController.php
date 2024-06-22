@@ -33,6 +33,7 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
+            'planned_moving_date' => ['required', 'date'], //引越予定日
             'phone_number' => ['required', 'string', 'max:15'], // 電話番号
             'email' => ['required', 'string', 'email', 'max:255', 'unique:' . User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
@@ -41,6 +42,7 @@ class RegisteredUserController extends Controller
         Log::info('Registration request data: ', $request->all());
         $user = User::create([
             'name' => $request->name,
+            'planned_moving_date' => $request->planned_moving_date, //引越予定日
             'phone_number' => $request->phone_number, // 電話番号
             'email' => $request->email,
             'password' => Hash::make($request->password),

@@ -10,9 +10,20 @@ class Task extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'sub_user_id',
+        'title',
+        'description',
+        'start_date',
+        'end_date',
+        'completed',
+        'is_template_task',
+        'template_task_id'
+    ];
+
     public function subusers()
     {
-        return $this->belongsToMany(SubUser::class)->withTimestamps();
+        return $this->belongsToMany(SubUser::class, 'subuser_tasks')->withTimestamps();
     }
 
     public function templatetasks()
