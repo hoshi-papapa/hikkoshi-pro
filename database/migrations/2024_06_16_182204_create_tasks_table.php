@@ -21,7 +21,7 @@ return new class extends Migration
             $table->date('end_date'); // タスク終了日
             $table->boolean('completed'); //タスクが完了したかどうか
             $table->boolean('is_template_task'); // テンプレートタスクかどうか
-            $table->unsignedBigInteger('template_task_id'); // テンプレートタスクID
+            $table->unsignedBigInteger('template_task_id')->nullable(); // テンプレートタスクID
             $table->timestamps();
 
             // 外部キー制約

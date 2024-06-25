@@ -21,9 +21,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [TaskController::class, 'index']);
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -33,15 +31,15 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
-Route::get('/templatetasks/test', function () {
-    $templateTasks = App\Models\TemplateTask::all();
-    return view('templatetasks.index', compact('templateTasks'));
+
+    Route::resource('tasks', TaskController::class)->only(['index', 'store', 'update', 'destroy']);
 });
 
 Route::resource('users', UserController::class);
 Route::resource('subusers', SubUserController::class);
 Route::resource('templatetasks', TemplateTaskController::class)->only(['index']);
-Route::resource('tasks', TaskController::class);
+
+//Route::resource('tasks', TaskController::class);
+
 
 require __DIR__ . '/auth.php';
