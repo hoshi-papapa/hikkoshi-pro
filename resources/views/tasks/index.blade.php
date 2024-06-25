@@ -53,7 +53,7 @@
                     {{-- 目標の編集用モーダル --}}
                     @include('modals.task-delete-modal')
 
-                    <tr class="clickable-row" data-bs-toggle="modal" data-bs-target="#taskModal" data-task="{{ $task }}">
+                    <tr class="clickable-row" data-bs-toggle="modal" data-bs-target="#editTaskModal{{ $task->id }}">
                         <td>{{ $task->title }}</td>
                         <td>{{ $task->description }}</td>
                         <td>{{ $task->start_date }}</td>
@@ -68,97 +68,3 @@
         </table>
     @endif
 </div>
-
-
-{{-- 
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        var taskModal = document.getElementById('taskModal');
-        var editTaskModal = document.getElementById('editTaskModal');
-
-        taskModal.addEventListener('show.bs.modal', function (event) {
-            var button = event.relatedTarget;
-            var task = button.getAttribute('data-task');
-            task = JSON.parse(task);
-
-            document.getElementById('modalTaskTitle').textContent = task.title;
-            document.getElementById('modalTaskDescription').textContent = task.description;
-            document.getElementById('modalTaskStartDate').textContent = task.start_date;
-            document.getElementById('modalTaskEndDate').textContent = task.end_date;
-            document.getElementById('modalTaskCompleted').textContent = task.completed ? '完了' : '未完了';
-
-            var deleteButton = taskModal.querySelector('.delete-button');
-            deleteButton.setAttribute('data-task-id', task.id);
-        });
-
-        editTaskModal.addEventListener('show.bs.modal', function (event) {
-            var button = event.relatedTarget;
-            var task = button.getAttribute('data-task');
-            task = JSON.parse(task);
-
-            document.getElementById('editTaskId').value = task.id;
-            document.getElementById('editTitle').value = task.title;
-            document.getElementById('editDescription').value = task.description;
-            document.getElementById('editStartDate').value = task.start_date;
-            document.getElementById('editEndDate').value = task.end_date;
-            document.getElementById('editCompleted').value = task.completed ? '1' : '0';
-            document.getElementById('editForm').action = `/tasks/${task.id}`;
-        });
-
-        document.getElementById('editForm').addEventListener('submit', function (event) {
-            event.preventDefault();
-            var taskId = document.getElementById('editTaskId').value;
-            var formData = new FormData(this);
-
-            fetch(`/tasks/${taskId}`, {
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                    'X-HTTP-Method-Override': 'PUT' // PUTリクエストを使用
-                },
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    window.location.reload();
-                } else {
-                    alert('更新に失敗しました。');
-                }
-            });
-        });
-
-        document.querySelectorAll('.delete-button').forEach(button => {
-            button.addEventListener('click', function (event) {
-                event.stopPropagation(); // イベントの伝播を停止
-
-                var taskId = this.getAttribute('data-task-id');
-
-                if (confirm('このタスクを削除しますか？')) {
-                    fetch(`/tasks/${taskId}`, {
-                        method: 'POST', // DELETEリクエストをエミュレートするためにPOSTを使用
-                        headers: {
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                            'X-HTTP-Method-Override': 'DELETE' // LaravelでDELETEリクエストを処理するためのヘッダー
-                        }
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            window.location.reload();
-                        } else {
-                            alert('削除に失敗しました。');
-                        }
-                    });
-                } else {
-                    // キャンセルされた場合、詳細モーダルを非表示にする
-                    var taskModal = document.getElementById('taskModal');
-                    var bootstrapModal = bootstrap.Modal.getInstance(taskModal);
-                    bootstrapModal.hide();
-                }
-            });
-        });
-    });
-</script> --}}
-@endsection

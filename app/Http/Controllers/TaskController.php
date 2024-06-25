@@ -69,10 +69,6 @@ class TaskController extends Controller
         return redirect()->route('tasks.index');
     }
 
-    public function show(Task $task)
-    {
-    }
-
     public function update(Request $request, Task $task)
     {
         $request->validate([
