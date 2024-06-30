@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
+<div class="container" style="max-width: 800px;">
     @if (session('error'))
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
             {{ session('error') }}
@@ -27,25 +27,21 @@
                 @method('PUT')
 
                 <!-- ニックネーム -->
-                <div class="form-group row">
-                    <label for="planned_moving_date" class="col-sm-2 col-form-label">ニックネーム</label>
-                    <div class="col-sm-10">
-                        <input type="text" class="form-control" id="nickname" name="nickname" value="{{ old('nickname', $subUser->nickname) }}" required autofocus autocomplete="nickname">
-                        @if ($errors->has('nickname'))
-                            <div class="mt-2 text-danger">{{ $errors->first('nickname') }}</div>
-                        @endif
-                    </div>
+                <div class="form-group">
+                    <label for="nickname" class="col-form-label">ニックネーム</label>
+                    <input type="text" class="form-control" id="nickname" name="nickname" value="{{ old('nickname', $subUser->nickname) }}" required autofocus autocomplete="nickname">
+                    @if ($errors->has('nickname'))
+                        <div class="mt-2 text-danger">{{ $errors->first('nickname') }}</div>
+                    @endif
                 </div>
 
-                {{-- 画像 --}}
-                <div class="form-group row mt-4">
-                    <label for="user_image_path" class="col-sm-2 col-form-label">画像</label>
-                    <div class="col-sm-10">
-                        <input type="file" class="form-control" id="user_image_path" name="user_image_path">
-                        @if ($errors->has('user_image_path'))
-                            <div class="alert alert-danger mt-2">{{ $errors->first('user_image_path') }}</div>
-                        @endif
-                    </div>
+                <!-- 画像 -->
+                <div class="form-group mt-2">
+                    <label for="user_image_path" class="col-form-label">画像</label>
+                    <input type="file" class="form-control" id="user_image_path" name="user_image_path">
+                    @if ($errors->has('user_image_path'))
+                        <div class="alert alert-danger mt-2">{{ $errors->first('user_image_path') }}</div>
+                    @endif
                 </div>
         </div>
 
@@ -57,12 +53,10 @@
         </div>
     </div>
     
-    {{-- 削除フォーム --}}
-    <form action="{{ route('subusers.destroy', $subUser->id )}}" method="POST" class="mt-3">
-        @csrf
-        @method('DELETE')
-        <button type="submit" class="btn btn-outline-danger float-end">ユーザー削除</button>
-    </form>
+    {{-- サブユーザーの削除用モーダル --}}
+    @include('modals.subuser-delete-modal')
 
+    {{-- 削除フォーム --}}
+    <button class="btn btn-outline-danger delete-button float-end mt-3" data-bs-toggle="modal" data-bs-target="#deleteSubuserModal">ユーザー削除</button>
 </div>
 @endsection

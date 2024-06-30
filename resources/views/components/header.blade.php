@@ -1,5 +1,5 @@
 <header class="navbar navbar-expand-sm shadow-sm bg-mycolor2">
-    <div class="container">
+    <div class="container" style="max-width: 800px;">
         <a class="navbar-brand" href="{{ url('/tasks') }}">
             <img src="{{ asset('images/logo.png') }}" style="height: 40px; ">
         </a>

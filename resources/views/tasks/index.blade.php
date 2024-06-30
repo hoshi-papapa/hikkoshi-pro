@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
+<div class="container" style="max-width: 800px;">
     <h1>タスク一覧</h1>
 
     <!-- サブユーザー選択フォーム -->
@@ -50,7 +50,7 @@
                     {{-- 目標の編集用モーダル --}}
                     @include('modals.task-edit-modal')
 
-                    {{-- 目標の編集用モーダル --}}
+                    {{-- 目標の削除用モーダル --}}
                     @include('modals.task-delete-modal')
 
                     <tr class="clickable-row" data-bs-toggle="modal" data-bs-target="#editTaskModal{{ $task->id }}">
@@ -68,3 +68,4 @@
         </table>
     @endif
 </div>
+@endsection

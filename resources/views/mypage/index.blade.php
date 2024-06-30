@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">    
+<div class="container"  style="max-width: 800px;">    
     @if (session('success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
             {{ session('success') }}
@@ -84,5 +84,11 @@
             </div>
         </div>
     </div>
+
+    <!-- ログアウトボタン -->
+    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="mt-3 d-inline d-flex justify-content-center">
+        @csrf
+        <button type="submit" class="btn btn-danger btn-mycolor1">ログアウト</button>
+    </form>
 </div>
 @endsection
