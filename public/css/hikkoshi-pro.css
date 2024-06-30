@@ -1,3 +1,18 @@
 tr.clickable-row {
     cursor: pointer;
 }
+.bg-mycolor1 {
+    background-color: #E6A4B4;
+}
+.bg-mycolor2 {
+    background-color: #F3D7CA;
+}
+.bg-mycolor3 {
+    background-color: #FFF8E3;
+}
+.bg-mycolor4 {
+    background-color: #F5EEE6;
+}
+.text-mycolor1 {
+    color: #4B2E2E;
+}
