@@ -16,3 +16,33 @@ tr.clickable-row {
 .text-mycolor1 {
     color: #4B2E2E;
 }
+
+.btn-mycolor1 {
+    background-color: #E6A4B4;
+    border-color: #E6A4B4;
+    color: #fff; /* テキスト色を白に設定 */
+}
+
+.btn-mycolor1:hover {
+    background-color: #D7919D; /* ホバー時の背景色 */
+    border-color: #D7919D; /* ボーダーの色も変更 */
+    color: #fff; /* ホバー時のテキスト色を白に保つ */
+}    
+
+.btn-mycolor1:active {
+    background-color: #C5808A; /* クリック時の背景色 */
+    border-color: #C5808A; /* ボーダーの色も変更 */
+    color: #fff; /* クリック時のテキスト色を白に保つ */
+}
+
+.card-img-top {
+    width: 100%;
+    height: 200px; /* 例として指定した高さ */
+    object-fit: cover; /* 画像を完全にカバーするように調整 */
+}
+
+.custom-card-img {
+    height: auto;
+    max-height: 400px;
+    object-fit: cover;
+}

@@ -23,6 +23,9 @@
 
         {{-- 独自のCSS --}}
         <link href="{{ asset('css/hikkoshi-pro.css') }}" rel="stylesheet">
+
+        {{-- 独自のJavaScriptファイル --}}
+        {{-- <script src="{{ asset('js/script.js') }}"></script> --}}
     </head>
 
     <body>
@@ -30,7 +33,7 @@
             @component('components.header')
             @endcomponent
 
-            <main class="py-1" style="min-height: calc(100vh - 7.6rem);">
+            <main class="py-3" style="min-height: calc(100vh - 7.6rem);">
                 @yield('content')
             </main>
 

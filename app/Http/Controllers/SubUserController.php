@@ -59,7 +59,7 @@ class SubUserController extends Controller
 
         $subUser->save();
 
-        return redirect()->route('subusers.index')->with('success', 'サブユーザーを登録しました');
+        return redirect()->route('mypage.index')->with('success', 'サブユーザーを登録しました');
     }
 
     /**
@@ -101,7 +101,7 @@ class SubUserController extends Controller
 
         $subUser->save();
 
-        return redirect()->route('subusers.index')->with('success', 'サブユーザーを更新しました。');
+        return redirect()->route('mypage.index')->with('success', 'サブユーザーを更新しました。');
     }
 
     /**
@@ -119,6 +119,6 @@ class SubUserController extends Controller
         $name = $subUser->nickname;
         $subUser->delete();
 
-        return redirect()->route('subusers.index')->with('success', $name . 'さんを削除しました。');
+        return redirect()->route('mypage.index')->with('success', $name . 'さんを削除しました。');
     }
 }

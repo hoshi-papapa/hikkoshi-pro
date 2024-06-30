@@ -8,14 +8,16 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use App\Models\User;
+use App\Models\SubUser;
 
 class MyPageController extends Controller
 {
     public function index()
     {
         $user = Auth::user();
+        $subUsers = SubUser::where('main_user_id', $user->id)->get();
 
-        return view('mypage.index', compact('user'));
+        return view('mypage.index', compact('user', 'subUsers'));
     }
 
     public function edit()
@@ -30,13 +32,11 @@ class MyPageController extends Controller
         $user = Auth::user();
 
         $request->validate([
-            'name' => 'required|string|max:255',
             'planned_moving_date' => 'required|date',
             'phone_number' => 'required|string|max:20',
             'email' => 'required|email|unique:users,email,' . $user->id,
         ]);
 
-        $user->name = $request->input('name');
         $user->planned_moving_date = $request->input('planned_moving_date');
         $user->phone_number = $request->input('phone_number');
         $user->email = $request->input('email');
