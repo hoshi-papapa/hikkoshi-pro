@@ -1,15 +1,33 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container" style="max-width: 800px;">
-    <h1>タスク一覧</h1>
+<div class="container" style="max-width: 800px;">    
+    @if (session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+
+    @if (session('error'))
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb" style="font-size: 1.75rem;">
+            <li class="breadcrumb-item active text-mycolor1" aria-current="page">やることリスト</li>
+        </ol>
+    </nav>
 
     <!-- サブユーザー選択フォーム -->
     <form method="GET" action="{{ route('tasks.index') }}">
         <div class="form-group">
-            <label for="sub_user_id">サブユーザーを選択</label>
+            <label for="sub_user_id">ユーザーを選択</label>
             <select name="sub_user_id" id="sub_user_id" class="form-control">
-                <option value="">すべてのサブユーザー</option>
+                <option value="">すべてのユーザー</option>
                 @foreach ($subUsers as $subUser)
                     <option value="{{ $subUser->id }}" {{ $selectedSubUserId == $subUser->id ? 'selected' : '' }}>
                         {{ $subUser->nickname }}
