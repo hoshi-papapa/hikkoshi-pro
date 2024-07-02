@@ -19,10 +19,12 @@ class TaskController extends Controller
             $tasks = Task::whereHas('subUsers', function ($query) use ($selectedSubUserId) {
                 $query->where('sub_users.id', $selectedSubUserId);
             })->get();
+            $selectedSubUser = SubUser::find($selectedSubUserId);
         } else {
             $tasks = Task::whereHas('subUsers', function ($query) use ($user) {
                 $query->where('sub_users.main_user_id', $user->id);
             })->get()->unique('id');
+            $selectedSubUser = null;
         }
 
         $subUsers = SubUser::where('main_user_id', $user->id)->get();
@@ -31,6 +33,7 @@ class TaskController extends Controller
             'tasks' => $tasks,
             'subUsers' => $subUsers,
             'selectedSubUserId' => $selectedSubUserId,
+            'selectedSubUser' => $selectedSubUser,
         ]);
     }
 
@@ -109,5 +112,16 @@ class TaskController extends Controller
         $task->delete();
 
         return redirect()->route('tasks.index');
+    }
+
+    public function toggleCompletion(Task $task)
+    {
+        $wasCompleted = $task->completed;
+        $task->completed = !$task->completed;
+        $task->save();
+
+        $message = $wasCompleted ? 'タスクを未完了にしました。' : 'タスクを完了しました。';
+
+        return redirect()->route('tasks.index')->with('success', $message);
     }
 }
