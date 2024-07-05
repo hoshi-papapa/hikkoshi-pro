@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Models\SubUser;
 use App\Models\Task;
+use App\Models\SubUserTask;
 use Illuminate\Validation\Rule;
+
 
 class TaskController extends Controller
 {
@@ -17,17 +20,17 @@ class TaskController extends Controller
 
         if ($selectedSubUserId) {
             $tasks = Task::whereHas('subUsers', function ($query) use ($selectedSubUserId) {
-                $query->where('sub_users.id', $selectedSubUserId);
+                $query->where('sub_user_id', $selectedSubUserId);
             })->get();
             $selectedSubUser = SubUser::find($selectedSubUserId);
         } else {
             $tasks = Task::whereHas('subUsers', function ($query) use ($user) {
                 $query->where('sub_users.main_user_id', $user->id);
-            })->get()->unique('id');
+            })->distinct()->get();
             $selectedSubUser = null;
         }
 
-        $subUsers = SubUser::where('main_user_id', $user->id)->get();
+        $subUsers = SubUser::all();
 
         return view('tasks.index', [
             'tasks' => $tasks,
@@ -93,18 +96,34 @@ class TaskController extends Controller
         $task->description = $request->input('description');
         $task->start_date = $request->input('start_date');
         $task->end_date = $request->input('end_date');
-        $task->completed =  $request->input('completed');
+        $task->completed = $request->has('completed');
         $task->is_template_task = 0; //編集したらテンプレートタスクから除外する
         $task->template_task_id = null;
         $task->save();
 
-        //中間テーブルへの関連付け
+        // 中間テーブルへの関連付け
         $subUserIds = $request->input('sub_users', []);
         if (!empty($subUserIds)) {
-            $subUsers = SubUser::whereIn('id', $subUserIds)->get();
-            $task->subUsers()->attach($subUsers);
+            // 現在の関連付けを削除
+            $task->subUsers()->detach();
+
+            // 重複チェックを行い、新しい関連付けを作成
+            foreach ($subUserIds as $subUserId) {
+                $toggleKey = 'sub_user_toggle_' . $subUserId . '_task_' . $task->id;
+                $completed = $request->has($toggleKey) ? true : false;
+
+                $existingRecord = DB::table('subuser_tasks')
+                    ->where('sub_user_id', $subUserId)
+                    ->where('task_id', $task->id)
+                    ->first();
+
+                if (!$existingRecord) {
+                    $task->subUsers()->attach($subUserId, ['completed' => $completed]);
+                }
+            }
         }
-        return redirect()->route('tasks.index');
+
+        return redirect()->route('tasks.index')->with('success', 'タスクを更新しました。');
     }
 
     public function destroy(Task $task)
@@ -114,14 +133,15 @@ class TaskController extends Controller
         return redirect()->route('tasks.index');
     }
 
-    public function toggleCompletion(Task $task)
+    public function toggleSubUserCompletion(Task $task, SubUser $subUser)
     {
-        $wasCompleted = $task->completed;
-        $task->completed = !$task->completed;
-        $task->save();
+        $subUserTask = $task->subUsers()->where('sub_user_id', $subUser->id)->first();
 
-        $message = $wasCompleted ? 'タスクを未完了にしました。' : 'タスクを完了しました。';
+        if ($subUserTask) {
+            $completed = !$subUserTask->pivot->completed;
+            $task->subUsers()->updateExistingPivot($subUser->id, ['completed' => $completed]);
+        }
 
-        return redirect()->route('tasks.index')->with('success', $message);
+        return redirect()->back()->with('success', 'タスクの完了状態を変更しました。');
     }
 }

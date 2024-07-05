@@ -34,7 +34,8 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/', [TaskController::class, 'index']);
     Route::resource('tasks', TaskController::class)->only(['index', 'store', 'update', 'destroy']);
-    Route::patch('/tasks/{task}/toggle-completion', [TaskController::class, 'toggleCompletion'])->name('tasks.toggleCompletion');
+    Route::patch('tasks/{task}/subusers/{subUser}/toggle-completion', [TaskController::class, 'toggleSubUserCompletion'])->name('tasks.toggleSubUserCompletion');
+
 
     Route::get('/mypage', [MyPageController::class, 'index'])->name('mypage.index');
     Route::get('/mypage/edit', [MyPageController::class, 'edit'])->name('mypage.edit');

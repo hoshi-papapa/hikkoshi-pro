@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('subuser_tasks', function (Blueprint $table) {
-            //
+            $table->boolean('completed')->default(false);
         });
     }
 
@@ -26,7 +26,7 @@ return new class extends Migration
     public function down()
     {
         Schema::table('subuser_tasks', function (Blueprint $table) {
-            //
+            $table->dropColumn('completed');
         });
     }
 };

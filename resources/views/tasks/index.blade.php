@@ -67,71 +67,44 @@
                 </tr>
             </thead>
             <tbody>
-                {{-- 未完了タスク --}}
                 @foreach ($tasks as $task)
-                    @if (!$task->completed)
-                        <tr class="clickable-row">
-                            <td data-task-id="{{ $task->id }}" onclick="document.getElementById('toggleCompletionForm{{ $task->id }}').submit();">
-                                <form id="toggleCompletionForm{{ $task->id }}" action="{{ route('tasks.toggleCompletion', $task->id) }}" method="POST">
-                                    @csrf
-                                    @method('patch')
-                                    <i class="far fa-circle"></i>
-                                </form>
-                            </td>
-                            <td data-bs-toggle="modal" data-bs-target="#editTaskModal{{ $task->id }}">{{ $task->title }}</td>
-                            <td data-bs-toggle="modal" data-bs-target="#editTaskModal{{ $task->id }}">{{ $task->description }}</td>
-                            <td data-bs-toggle="modal" data-bs-target="#editTaskModal{{ $task->id }}">{{ $task->start_date }}</td>
-                            <td data-bs-toggle="modal" data-bs-target="#editTaskModal{{ $task->id }}">{{ $task->end_date }}</td>
-                            <td>
-                                <button class="btn btn-sm btn-danger delete-button" data-bs-toggle="modal" data-bs-target="#deleteTaskModal{{ $task->id }}">削除</button>
-                            </td>
-                        </tr>
-                    @endif
-                @endforeach
-            </tbody>
-
-            <tbody>
-                {{-- 未完了タスク --}}
-                @foreach ($tasks as $task)
-                    @if ($task->completed)
-                        <tr class="clickable-row">
-                            <td data-task-id="{{ $task->id }}" onclick="document.getElementById('toggleCompletionForm{{ $task->id }}').submit();">
-                                <form id="toggleCompletionForm{{ $task->id }}" action="{{ route('tasks.toggleCompletion', $task->id) }}" method="POST">
-                                    @csrf
-                                    @method('patch')
-                                    <i class="fas fa-check-circle"></i>
-                                </form>
-                            </td>
-                            <td data-bs-toggle="modal" data-bs-target="#editTaskModal{{ $task->id }}">{{ $task->title }}</td>
-                            <td data-bs-toggle="modal" data-bs-target="#editTaskModal{{ $task->id }}">{{ $task->description }}</td>
-                            <td data-bs-toggle="modal" data-bs-target="#editTaskModal{{ $task->id }}">{{ $task->start_date }}</td>
-                            <td data-bs-toggle="modal" data-bs-target="#editTaskModal{{ $task->id }}">{{ $task->end_date }}</td>
-                            <td>
-                                <button class="btn btn-sm btn-danger delete-button" data-bs-toggle="modal" data-bs-target="#deleteTaskModal{{ $task->id }}">削除</button>
-                            </td>
-                        </tr>
-                    @endif
-                @endforeach
-            </tbody>
-                @foreach ($tasks as $task)
-                    {{-- 目標の編集用モーダル --}}
-                    @include('modals.task-edit-modal')
-
-                    {{-- 目標の削除用モーダル --}}
-                    @include('modals.task-delete-modal')
-
-                    <tr class="clickable-row" data-bs-toggle="modal" data-bs-target="#editTaskModal{{ $task->id }}">
-                        <td>{{ $task->title }}</td>
-                        <td>{{ $task->description }}</td>
-                        <td>{{ $task->start_date }}</td>
-                        <td>{{ $task->end_date }}</td>
-                        <td>
-                            <button class="btn btn-sm btn-danger delete-button" data-bs-toggle="modal" data-bs-target="#deleteTaskModal{{ $task->id }}">削除</button>
-                        </td>
-                    </tr>
+                    @foreach ($task->subUsers as $subUser)
+                        @if ($selectedSubUserId == $subUser->id || !$selectedSubUserId)
+                            <tr class="clickable-row">
+                                <td>
+                                    <form action="{{ route('tasks.toggleSubUserCompletion', ['subUser' => $subUser->id, 'task' => $task->id]) }}" method="POST">
+                                        @csrf
+                                        @method('patch')
+                                        <button type="submit" class="btn btn-link p-0">
+                                            @if ($subUser->pivot->completed)
+                                                <i class="fas fa-check-circle"></i>
+                                            @else
+                                                <i class="far fa-circle"></i>
+                                            @endif
+                                        </button>
+                                    </form>
+                                </td>
+                                <td data-bs-toggle="modal" data-bs-target="#editTaskModal{{ $task->id }}">{{ $task->title }}</td>
+                                <td data-bs-toggle="modal" data-bs-target="#editTaskModal{{ $task->id }}">{{ $task->description }}</td>
+                                <td data-bs-toggle="modal" data-bs-target="#editTaskModal{{ $task->id }}">{{ $task->start_date }}</td>
+                                <td data-bs-toggle="modal" data-bs-target="#editTaskModal{{ $task->id }}">{{ $task->end_date }}</td>
+                                <td>
+                                    <button class="btn btn-sm btn-danger delete-button" data-bs-toggle="modal" data-bs-target="#deleteTaskModal{{ $task->id }}">削除</button>
+                                </td>
+                            </tr>
+                        @endif
+                    @endforeach
                 @endforeach
             </tbody>
         </table>
+
+        @foreach ($tasks as $task)
+            {{-- 目標の編集用モーダル --}}
+            @include('modals.task-edit-modal')
+
+            {{-- 目標の削除用モーダル --}}
+            @include('modals.task-delete-modal')
+        @endforeach
     @endif
 </div>
 @endsection
