@@ -75,16 +75,4 @@
         });
     });
 
-    // 初期ロード時にチェックボックスの状態に応じてトグルボタンを表示/非表示
-    document.addEventListener('DOMContentLoaded', function() {
-        document.querySelectorAll('.sub-user-checkbox').forEach(function(checkbox) {
-            var subUserId = checkbox.value;
-            var toggleContainer = document.getElementById('sub_user_toggle_container_' + subUserId);
-            if (checkbox.checked) {
-                toggleContainer.style.display = 'inline-block'; // トグルボタンを表示
-            } else {
-                toggleContainer.style.display = 'none'; // トグルボタンを非表示
-            }
-        });
-    });
 </script>
