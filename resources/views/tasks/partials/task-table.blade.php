@@ -25,7 +25,7 @@
                         <i class="fas fa-circle"></i>
                     @endif
                 </td>
-                <td data-bs-toggle="modal" data-bs-target="#editTaskModal{{ $task->id }}">{{ $task->title }}</td>
+                <td data-bs-toggle="modal" data-bs-target="#editTaskModal{{ $task->id }}">{{ $task->id }} {{ $task->title }}</td>
                 <td data-bs-toggle="modal" data-bs-target="#editTaskModal{{ $task->id }}">{{ $task->description }}</td>
                 <td data-bs-toggle="modal" data-bs-target="#editTaskModal{{ $task->id }}">{{ $task->start_date }}</td>
                 <td data-bs-toggle="modal" data-bs-target="#editTaskModal{{ $task->id }}">{{ $task->end_date }}</td>

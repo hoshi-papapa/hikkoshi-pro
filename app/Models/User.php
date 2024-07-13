@@ -44,8 +44,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'email_verified_at' => 'datetime',
     ];
 
-    public function subusers()
+    public function SubUsers()
     {
-        return $this->hasMany(Subuser::class, 'main_user_id');
+        return $this->hasMany(SubUser::class, 'main_user_id');
     }
 }
