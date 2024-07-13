@@ -53,9 +53,15 @@ class SubUserController extends Controller
         $subUser->nickname = $request->input('nickname');
 
         if ($request->hasFile('user_image_path')) {
-            $path = $request->file('user_image_path')->store('subusers', 'public');
-            $subUser->user_image_path = $path;
+            // 新しい画像をS3にアップロード
+            $path = $request->file('user_image_path')->store('subusers', 's3');
+            $subUser->user_image_path = Storage::disk('s3')->url($path);
         }
+
+        // if ($request->hasFile('user_image_path')) {
+        //     $path = $request->file('user_image_path')->store('subusers', 'public');
+        //     $subUser->user_image_path = $path;
+        // }
 
         $subUser->save();
 
@@ -89,15 +95,27 @@ class SubUserController extends Controller
 
         $subUser->nickname = $request->input('nickname');
 
+
         if ($request->hasFile('user_image_path')) {
             // 古い画像を削除する処理が必要ならここに追加
-            if ($subUser->user_image_path && Storage::exists('public/' . $subUser->user_image_path)) {
-                Storage::delete('public/' . $subUser->user_image_path);
+            if ($subUser->user_image_path && Storage::disk('s3')->exists($subUser->user_image_path)) {
+                Storage::disk('s3')->delete($subUser->user_image_path);
             }
 
-            $path = $request->file('user_image_path')->store('subusers', 'public');
-            $subUser->user_image_path = $path;
+            // 新しい画像をS3にアップロード
+            $path = $request->file('user_image_path')->store('subusers', 's3');
+            $subUser->user_image_path = Storage::disk('s3')->url($path);
         }
+
+        // if ($request->hasFile('user_image_path')) {
+        //     // 古い画像を削除する処理が必要ならここに追加
+        //     if ($subUser->user_image_path && Storage::exists('public/' . $subUser->user_image_path)) {
+        //         Storage::delete('public/' . $subUser->user_image_path);
+        //     }
+
+        //     $path = $request->file('user_image_path')->store('subusers', 'public');
+        //     $subUser->user_image_path = $path;
+        // }
 
         $subUser->save();
 
