@@ -5,10 +5,14 @@
             <div class="modal-header bg-mycolor3 text-mycolor1">
                 <h5 class="modal-title" id="addTaskModalLabel">タスク追加</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="閉じる"></button>
-            </div>
+            </div>         
+
             <form id="addTaskForm" action="{{ route('tasks.store') }}" method="POST">
                 @csrf
                 <div class="modal-body">
+
+                    <div id="errorMessages" class="alert alert-danger d-none"></div>
+
                     <div class="form-group">
                         <label for="addTitle">タイトル</label>
                         <input type="text" class="form-control" id="addTitle" name="title">
@@ -30,7 +34,7 @@
                         @foreach ($subUsers as $subUser)
                             <div class="mt-2">
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input sub-user-checkbox" type="checkbox" id="sub_user_{{ $subUser->id }}" name="sub_users[]" value="{{ $subUser->id }}">
+                                    <input class="form-check-input add-sub-user-checkbox" type="checkbox" id="sub_user_{{ $subUser->id }}" name="sub_users[]" value="{{ $subUser->id }}">
                                     <label class="form-check-label me-2" for="sub_user_{{ $subUser->id }}">{{ $subUser->nickname }}</label>
                                     <div class="form-check form-switch" id="sub_user_toggle_container_{{ $subUser->id }}" style="display: none;">
                                         <input class="form-check-input sub-user-toggle" type="checkbox" id="sub_user_toggle_{{ $subUser->id }}" name="sub_user_toggle_{{ $subUser->id }}" data-sub-user-id="{{ $subUser->id }}">
@@ -51,9 +55,55 @@
 </div>
 
 <script>
+    document.getElementById('addTaskForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // フォームの通常の送信を防止
+
+        // Ajaxでフォームを送信
+        var formData = new FormData(this);
+
+        fetch(this.action, {
+            method: this.method,
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.errors) {
+                // バリデーションエラーがある場合はエラーメッセージを表示
+                handleFormErrors(data.errors);
+            } else if (data.redirect) {
+                // 正常に作成できた場合はリダイレクト
+                window.location.href = data.redirect;
+            } else {
+                console.error('Unexpected response:', data);
+                alert('Unexpected error occurred. Please try again later.');
+            }
+        })
+        .catch(error => {
+            console.error('Unexpected error:', error);
+            alert('Unexpected error occurred. Please try again later.');
+        });
+    });
+
+    function handleFormErrors(errors) {
+        var errorMessagesDiv = document.getElementById('errorMessages');
+        errorMessagesDiv.classList.remove('d-none'); // エラーメッセージコンテナを表示
+
+        var errorMessage = '<ul style="margin-bottom: 0;">';
+        for (var key in errors) {
+            errorMessage += '<li>' + errors[key].join(', ') + '</li>';
+        }
+        errorMessage += '</ul>';
+
+        errorMessagesDiv.innerHTML = errorMessage;
+    }
+
     // チェックボックスの状態変更を監視
-    document.querySelectorAll('.sub-user-checkbox').forEach(function(checkbox) {
+    document.querySelectorAll('.add-sub-user-checkbox').forEach(function(checkbox) {
         checkbox.addEventListener('change', function() {
+            console.log('editじゃなくてaddが動いているかも');
             var subUserId = this.value;
             var toggleContainer = document.getElementById('sub_user_toggle_container_' + subUserId);
             var toggle = document.getElementById('sub_user_toggle_' + subUserId);
@@ -65,14 +115,4 @@
             }
         });
     });
-
-    // フォームの送信時に隠しフィールドの値を更新
-    document.querySelectorAll('.sub-user-toggle').forEach(function(toggle) {
-        toggle.addEventListener('change', function() {
-            var subUserId = this.dataset.subUserId;
-            var hiddenField = document.getElementById('editCompleted' + subUserId);
-            hiddenField.value = this.checked ? 1 : 0; // 隠しフィールドにトグルボタンの値を反映
-        });
-    });
-
 </script>

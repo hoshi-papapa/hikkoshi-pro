@@ -24,6 +24,6 @@ class SubUser extends Model
     }
     public function users()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'main_user_id');
     }
 }

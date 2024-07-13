@@ -5,47 +5,94 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Session;
 use App\Models\SubUser;
 use App\Models\Task;
 use App\Models\SubUserTask;
 use Illuminate\Validation\Rule;
-
+use Carbon\Carbon;
 
 class TaskController extends Controller
 {
+
+
     public function index(Request $request)
     {
-        $user = Auth::user();
+        $user = auth()->user();
+        $subUsers = $user->subUsers;
         $selectedSubUserId = $request->input('sub_user_id');
+        $selectedSubUser = $subUsers->find($selectedSubUserId);
 
-        if ($selectedSubUserId) {
-            $tasks = Task::whereHas('subUsers', function ($query) use ($selectedSubUserId) {
-                $query->where('sub_user_id', $selectedSubUserId);
-            })->get();
-            $selectedSubUser = SubUser::find($selectedSubUserId);
-        } else {
-            $tasks = Task::whereHas('subUsers', function ($query) use ($user) {
-                $query->where('sub_users.main_user_id', $user->id);
-            })->distinct()->get();
-            $selectedSubUser = null;
+        // 条件に応じてタスクをフィルタリングし、関連するサブユーザーの情報をプリロードした状態でクエリを構築する
+        $tasksQuery = Task::with('subUsers')
+            ->when($selectedSubUserId, function ($query) use ($selectedSubUserId) {
+                return $query->whereHas('subUsers', function ($query) use ($selectedSubUserId) {
+                    $query->where('sub_user_id', $selectedSubUserId);
+                });
+            });
+
+        $tasks = $tasksQuery->get();
+
+        $plannedMovingDate = Carbon::parse($user->planned_moving_date)->startOfDay(); // ユーザーの引越予定日を取得し、日の最初に設定
+
+        $threeWeeksBefore = $plannedMovingDate->copy()->subWeeks(3);
+        $twoWeeksBefore = $plannedMovingDate->copy()->subWeeks(2);
+        $oneWeekBefore = $plannedMovingDate->copy()->subWeeks(1);
+        $oneDayBefore = $plannedMovingDate->copy()->subDays(1);
+        $oneWeekAfter = $plannedMovingDate->copy()->addWeek();
+
+        $categorizedTasks = [
+            'threeWeeksBefore' => [],
+            'twoWeeksBefore' => [],
+            'oneWeekBefore' => [],
+            'oneDayBefore' => [],
+            'movingDay' => [],
+            'oneWeekAfter' => [],
+            'earlyAfterMoving' => [],
+        ];
+
+        foreach ($tasks as $task) {
+            $endDate = Carbon::parse($task->end_date);
+
+            if ($endDate->lt($threeWeeksBefore)) {
+                $categorizedTasks['threeWeeksBefore'][] = $task;
+            } elseif ($endDate->between($threeWeeksBefore, $twoWeeksBefore)) {
+                $categorizedTasks['twoWeeksBefore'][] = $task;
+            } elseif ($endDate->between($twoWeeksBefore, $oneWeekBefore)) {
+                $categorizedTasks['oneWeekBefore'][] = $task;
+            } elseif ($endDate->between($oneWeekBefore, $oneDayBefore)) {
+                $categorizedTasks['oneDayBefore'][] = $task;
+            } elseif ($endDate->isSameDay($plannedMovingDate)) {
+                $categorizedTasks['movingDay'][] = $task;
+            } elseif ($endDate->between($plannedMovingDate, $oneWeekAfter)) {
+                $categorizedTasks['oneWeekAfter'][] = $task;
+            } else {
+                $categorizedTasks['earlyAfterMoving'][] = $task;
+            }
         }
 
-        $subUsers = SubUser::all();
 
-        return view('tasks.index', [
-            'tasks' => $tasks,
-            'subUsers' => $subUsers,
-            'selectedSubUserId' => $selectedSubUserId,
-            'selectedSubUser' => $selectedSubUser,
-        ]);
+        // 各カテゴリ内のタスクを終了日が若い順番に並び替える
+        foreach ($categorizedTasks as $category => $tasks) {
+            usort($tasks, function ($a, $b) {
+                $dateA = Carbon::parse($a->end_date);
+                $dateB = Carbon::parse($b->end_date);
+                return $dateA->lt($dateB) ? -1 : 1;
+            });
+            $categorizedTasks[$category] = $tasks;
+        }
+
+        return view('tasks.index', compact('tasks', 'categorizedTasks', 'subUsers', 'selectedSubUserId', 'selectedSubUser'));
     }
 
     public function store(Request $request)
     {
-        $request->validate([
-            'title' => 'required',
+        $validator = Validator::make($request->all(), [
+            'title' => 'required|max:32',
+            'description' => 'nullable|max:255',
             'start_date' => 'required|date',
-            'end_date' => 'required|date|after:start_date',
+            'end_date' => 'required|date|after_or_equal:start_date',
             'sub_users' => [
                 'required',
                 Rule::exists('sub_users', 'id')->where(function ($query) {
@@ -53,9 +100,22 @@ class TaskController extends Controller
                 }),
             ],
         ], [
+            'title.required' => 'タイトルは必ず入力してください。',
+            'title.max' => 'タイトルは32文字まで入力できます。',
+            'description.max' => 'タスクの内容は最大255文字まで入力できます。',
+            'start_date.required' => '開始日は必ず指定してください。',
+            'end_date.required' => '終了日は必ず指定してください。',
+            'end_date.after_or_equal' => '終了日は開始日と同じか、それより後の日付を指定してください。',
             'sub_users.required' => 'サブユーザーを選択してください。',
             'sub_users.exists' => '選択されたサブユーザーが存在しません。',
         ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors()
+            ], 422);
+        }
 
         $task = new Task();
         $task->title = $request->input('title');
@@ -66,21 +126,27 @@ class TaskController extends Controller
         $task->is_template_task = 0;
         $task->save();
 
-        //中間テーブルへの関連付け
+        // 中間テーブルへの関連付け
         $subUserIds = $request->input('sub_users', []);
         if (!empty($subUserIds)) {
             $subUsers = SubUser::whereIn('id', $subUserIds)->get();
             $task->subUsers()->attach($subUsers);
         }
-        return redirect()->route('tasks.index');
+
+        //成功メッセージをフラッシュ
+        Session::flash('success', 'タスクが作成されました。');
+
+        //タスク一覧ページにリダイレクト
+        return response()->json(['redirect' => route('tasks.index')]);
     }
 
     public function update(Request $request, Task $task)
     {
-        $request->validate([
-            'title' => 'required',
+        $validator = Validator::make($request->all(), [
+            'title' => 'required|max:32',
+            'description' => 'nullable|max:255',
             'start_date' => 'required|date',
-            'end_date' => 'required|date|after:start_date',
+            'end_date' => 'required|date|after_or_equal:start_date',
             'sub_users' => [
                 'required',
                 Rule::exists('sub_users', 'id')->where(function ($query) {
@@ -88,10 +154,22 @@ class TaskController extends Controller
                 }),
             ],
         ], [
+            'title.required' => 'タイトルは必ず入力してください。',
+            'title.max' => 'タイトルは32文字まで入力できます。',
+            'description.max' => 'タスクの内容は最大255文字まで入力できます。',
+            'start_date.required' => '開始日は必ず指定してください。',
+            'end_date.required' => '終了日は必ず指定してください。',
+            'end_date.after_or_equal' => '終了日は開始日と同じか、それより後の日付を指定してください。',
             'sub_users.required' => 'サブユーザーを選択してください。',
             'sub_users.exists' => '選択されたサブユーザーが存在しません。',
         ]);
 
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'errors' => $validator->errors()
+            ], 422);
+        }
         $task->title = $request->input('title');
         $task->description = $request->input('description');
         $task->start_date = $request->input('start_date');
@@ -130,7 +208,7 @@ class TaskController extends Controller
     {
         $task->delete();
 
-        return redirect()->route('tasks.index');
+        return redirect()->route('tasks.index')->with('success', 'タスクを削除しました。');
     }
 
     public function toggleSubUserCompletion(Task $task, SubUser $subUser)

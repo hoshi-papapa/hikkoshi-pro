@@ -51,60 +51,133 @@
         </a>
     </div>
 
-    <!-- タスク一覧表示 -->
-    @if ($tasks->isEmpty())
-        <p>タスクがありません。</p>
-    @else
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>完了・未完了</th>
-                    <th>タイトル</th>
-                    <th>説明</th>
-                    <th>開始日</th>
-                    <th>終了日</th>
-                    <th>アクション</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($tasks as $task)
-                    @foreach ($task->subUsers as $subUser)
-                        @if ($selectedSubUserId == $subUser->id || !$selectedSubUserId)
-                            <tr class="clickable-row">
-                                <td>
-                                    <form action="{{ route('tasks.toggleSubUserCompletion', ['subUser' => $subUser->id, 'task' => $task->id]) }}" method="POST">
-                                        @csrf
-                                        @method('patch')
-                                        <button type="submit" class="btn btn-link p-0">
-                                            @if ($subUser->pivot->completed)
-                                                <i class="fas fa-check-circle"></i>
-                                            @else
-                                                <i class="far fa-circle"></i>
-                                            @endif
-                                        </button>
-                                    </form>
-                                </td>
-                                <td data-bs-toggle="modal" data-bs-target="#editTaskModal{{ $task->id }}">{{ $task->title }}</td>
-                                <td data-bs-toggle="modal" data-bs-target="#editTaskModal{{ $task->id }}">{{ $task->description }}</td>
-                                <td data-bs-toggle="modal" data-bs-target="#editTaskModal{{ $task->id }}">{{ $task->start_date }}</td>
-                                <td data-bs-toggle="modal" data-bs-target="#editTaskModal{{ $task->id }}">{{ $task->end_date }}</td>
-                                <td>
-                                    <button class="btn btn-sm btn-danger delete-button" data-bs-toggle="modal" data-bs-target="#deleteTaskModal{{ $task->id }}">削除</button>
-                                </td>
-                            </tr>
-                        @endif
-                    @endforeach
-                @endforeach
-            </tbody>
-        </table>
+<!-- タスク一覧表示 -->
+@if (empty($tasks))
+    <p>タスクがありません。</p>
+@else
+    @if (!empty($categorizedTasks['threeWeeksBefore']))
+        <h3>3週間前までに終わらせるタスク</h3>
+        @include('tasks.partials.task-table', ['tasks' => $categorizedTasks['threeWeeksBefore']])
 
-        @foreach ($tasks as $task)
+        @foreach ($categorizedTasks['threeWeeksBefore'] as $task)
             {{-- 目標の編集用モーダル --}}
-            @include('modals.task-edit-modal')
+            @include('modals.task-edit-modal', ['task' => $task])
 
             {{-- 目標の削除用モーダル --}}
-            @include('modals.task-delete-modal')
+            @include('modals.task-delete-modal', ['task' => $task])
         @endforeach
     @endif
+
+    @if (!empty($categorizedTasks['twoWeeksBefore']))
+        <h3>2週間前までに終わらせるタスク</h3>
+        @include('tasks.partials.task-table', ['tasks' => $categorizedTasks['twoWeeksBefore']])
+
+        @foreach ($categorizedTasks['twoWeeksBefore'] as $task)
+            {{-- 目標の編集用モーダル --}}
+            @include('modals.task-edit-modal', ['task' => $task])
+
+            {{-- 目標の削除用モーダル --}}
+            @include('modals.task-delete-modal', ['task' => $task])
+        @endforeach
+    @endif
+
+    @if (!empty($categorizedTasks['oneWeekBefore']))
+        <h3>1週間前までに終わらせるタスク</h3>
+        @include('tasks.partials.task-table', ['tasks' => $categorizedTasks['oneWeekBefore']])
+
+        @foreach ($categorizedTasks['oneWeekBefore'] as $task)
+            {{-- 目標の編集用モーダル --}}
+            @include('modals.task-edit-modal', ['task' => $task])
+
+            {{-- 目標の削除用モーダル --}}
+            @include('modals.task-delete-modal', ['task' => $task])
+        @endforeach
+    @endif
+
+    @if (!empty($categorizedTasks['oneDayBefore']))
+        <h3>前日までに終わらせるタスク</h3>
+        @include('tasks.partials.task-table', ['tasks' => $categorizedTasks['oneDayBefore']])
+
+        @foreach ($categorizedTasks['oneDayBefore'] as $task)
+            {{-- 目標の編集用モーダル --}}
+            @include('modals.task-edit-modal', ['task' => $task])
+
+            {{-- 目標の削除用モーダル --}}
+            @include('modals.task-delete-modal', ['task' => $task])
+        @endforeach
+    @endif
+
+    @if (!empty($categorizedTasks['movingDay']))
+        <h3>当日終わらせるタスク</h3>
+        @include('tasks.partials.task-table', ['tasks' => $categorizedTasks['movingDay']])
+
+        @foreach ($categorizedTasks['movingDay'] as $task)
+            {{-- 目標の編集用モーダル --}}
+            @include('modals.task-edit-modal', ['task' => $task])
+
+            {{-- 目標の削除用モーダル --}}
+            @include('modals.task-delete-modal', ['task' => $task])
+        @endforeach
+    @endif
+
+    @if (!empty($categorizedTasks['oneWeekAfter']))
+        <h3>引っ越し後1週間以内に終わらせるタスク</h3>
+        @include('tasks.partials.task-table', ['tasks' => $categorizedTasks['oneWeekAfter']])
+
+        @foreach ($categorizedTasks['oneWeekAfter'] as $task)
+            {{-- 目標の編集用モーダル --}}
+            @include('modals.task-edit-modal', ['task' => $task])
+
+            {{-- 目標の削除用モーダル --}}
+            @include('modals.task-delete-modal', ['task' => $task])
+        @endforeach
+    @endif
+
+    @if (!empty($categorizedTasks['earlyAfterMoving']))
+        <h3>引っ越し後早めに終わらせるタスク</h3>
+        @include('tasks.partials.task-table', ['tasks' => $categorizedTasks['earlyAfterMoving']])
+
+        @foreach ($categorizedTasks['earlyAfterMoving'] as $task)
+            {{-- 目標の編集用モーダル --}}
+            @include('modals.task-edit-modal', ['task' => $task])
+
+            {{-- 目標の削除用モーダル --}}
+            @include('modals.task-delete-modal', ['task' => $task])
+        @endforeach
+    @endif
+
+@endif
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    // チェックボックスの状態変更を監視
+    document.querySelectorAll('.sub-user-checkbox').forEach(function(checkbox) {
+        checkbox.addEventListener('change', function() {
+            // コンソールログを追加して、各変数の値を確認
+            console.log('Checkbox changed:', this.id);
+            var idParts = this.id.split('_');
+            var taskId = idParts[idParts.length - 1]; // IDの最後の部分をtaskIdとして取得
+            console.log('Task ID:', taskId);
+            var subUserId = this.value;
+            console.log('Sub User ID:', subUserId);
+
+            var toggleContainer = document.getElementById('sub_user_toggle_container_' + subUserId + '_task_' + taskId);
+            var toggle = document.getElementById('sub_user_toggle_' + subUserId + '_task_' + taskId);
+
+            // コンソールログで要素が正しく取得できているか確認
+            console.log('Toggle Container:', toggleContainer);
+            console.log('Toggle:', toggle);
+
+            if (this.checked) {
+                toggleContainer.style.display = 'inline-block'; // トグルボタンを表示
+            } else {
+                toggleContainer.style.display = 'none'; // トグルボタンを非表示
+                toggle.checked = false; // トグルボタンの値を false に設定
+            }
+        });
+    });
+});
+
+</script>
+
 @endsection

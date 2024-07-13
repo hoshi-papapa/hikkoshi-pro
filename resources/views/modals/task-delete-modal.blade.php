@@ -1,4 +1,4 @@
-<!-- タスク詳細モーダル -->
+<!-- タスク削除モーダル -->
 <div class="modal fade" id="deleteTaskModal{{ $task->id }}" tabindex="-1" aria-labelledby="deleteTaskModalLabel{{ $task->id }}">
     <div class="modal-dialog">
         <div class="modal-content">

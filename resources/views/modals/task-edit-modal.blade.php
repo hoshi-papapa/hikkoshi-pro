@@ -26,14 +26,13 @@
                     <div class="form-group mt-3">
                         <label for="editEndDate{{ $task->id }}">終了日</label>
                         <input type="date" class="form-control" id="editEndDate{{ $task->id }}" name="end_date" value="{{ $task->end_date }}">
-                    </div>
+                    </div>                    
                     <div class="form-group mt-3">
                         <label>サブユーザーを選択</label><br>
                         @foreach ($subUsers as $subUser)
                             <div class="mt-2">
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input sub-user-checkbox" type="checkbox" id="sub_user_{{ $subUser->id }}_task_{{ $task->id }}" name="sub_users[]" value="{{ $subUser->id }}"
-                                    @if($task->subUsers->contains($subUser->id)) checked @endif>
+                                    <input class="form-check-input sub-user-checkbox" type="checkbox" id="sub_user_{{ $subUser->id }}_task_{{ $task->id }}" name="sub_users[]" value="{{ $subUser->id }}" @if($task->subUsers->contains($subUser->id)) checked @endif>
                                     <label class="form-check-label me-2" for="sub_user_{{ $subUser->id }}_task_{{ $task->id }}">{{ $subUser->nickname }}</label>
                                     <div class="form-check form-switch" id="sub_user_toggle_container_{{ $subUser->id }}_task_{{ $task->id }}" style="display: {{ $task->subUsers->contains($subUser->id) ? 'inline-block' : 'none' }};">
                                         <input class="form-check-input sub-user-toggle" type="checkbox" id="sub_user_toggle_{{ $subUser->id }}_task_{{ $task->id }}" name="sub_user_toggle_{{ $subUser->id }}_task_{{ $task->id }}" data-sub-user-id="{{ $subUser->id }}" data-task-id="{{ $task->id }}" {{ $task->subUsers->contains($subUser->id) && $task->subUsers->where('id', $subUser->id)->first()->pivot->completed ? 'checked' : '' }}>
@@ -43,6 +42,7 @@
                             </div>
                         @endforeach
                     </div>
+
                 </div>
                 <div class="modal-footer bg-mycolor3 text-mycolor1">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">閉じる</button>
@@ -54,43 +54,49 @@
 </div>
 
 <script>
-    // チェックボックスの状態変更を監視
-    document.querySelectorAll('.sub-user-checkbox').forEach(function(checkbox) {
-        checkbox.addEventListener('change', function() {
-            var subUserId = this.value;
-            var taskId = this.id.split('_').pop(); // task_id を取得
-            var toggleContainer = document.getElementById('sub_user_toggle_container_' + subUserId + '_task_' + taskId);
-            var toggle = document.getElementById('sub_user_toggle_' + subUserId + '_task_' + taskId);
-            if (this.checked) {
-                toggleContainer.style.display = 'inline-block'; // トグルボタンを表示
-            } else {
-                toggleContainer.style.display = 'none'; // トグルボタンを非表示
-                toggle.checked = false; // トグルボタンの値を false に設定
+    document.getElementById('editTaskForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // フォームの通常の送信を防止
+
+        // Ajaxでフォームを送信
+        var formData = new FormData(this);
+
+        fetch(this.action, {
+            method: this.method,
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
             }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.errors) {
+                // バリデーションエラーがある場合はエラーメッセージを表示
+                handleFormErrors(data.errors);
+            } else if (data.redirect) {
+                // 正常に作成できた場合はリダイレクト
+                window.location.href = data.redirect;
+            } else {
+                console.error('Unexpected response:', data);
+                alert('Unexpected error occurred. Please try again later.');
+            }
+        })
+        .catch(error => {
+            console.error('Unexpected error:', error);
+            alert('Unexpected error occurred. Please try again later.');
         });
     });
 
-    // フォームの送信時に隠しフィールドの値を更新
-    document.querySelectorAll('.sub-user-toggle').forEach(function(toggle) {
-        toggle.addEventListener('change', function() {
-            var subUserId = this.dataset.subUserId;
-            var taskId = this.dataset.taskId;
-            var hiddenField = document.getElementById('editCompleted' + taskId);
-            hiddenField.value = this.checked ? 1 : 0; // 隠しフィールドにトグルボタンの値を反映
-        });
-    });
+    function handleFormErrors(errors) {
+        var errorMessagesDiv = document.getElementById('errorMessages');
+        errorMessagesDiv.classList.remove('d-none'); // エラーメッセージコンテナを表示
 
-    // 初期ロード時にチェックボックスの状態に応じてトグルボタンを表示/非表示
-    document.addEventListener('DOMContentLoaded', function() {
-        document.querySelectorAll('.sub-user-checkbox').forEach(function(checkbox) {
-            var subUserId = checkbox.value;
-            var taskId = checkbox.id.split('_').pop(); // task_id を取得
-            var toggleContainer = document.getElementById('sub_user_toggle_container_' + subUserId + '_task_' + taskId);
-            if (checkbox.checked) {
-                toggleContainer.style.display = 'inline-block'; // トグルボタンを表示
-            } else {
-                toggleContainer.style.display = 'none'; // トグルボタンを非表示
-            }
-        });
-    });
+        var errorMessage = '<ul style="margin-bottom: 0;">';
+        for (var key in errors) {
+            errorMessage += '<li>' + errors[key].join(', ') + '</li>';
+        }
+        errorMessage += '</ul>';
+
+        errorMessagesDiv.innerHTML = errorMessage;
+    }
+
 </script>

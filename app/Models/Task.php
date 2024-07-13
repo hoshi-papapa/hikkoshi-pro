@@ -21,10 +21,6 @@ class Task extends Model
         'template_task_id'
     ];
 
-    public function subusers2()
-    {
-        return $this->belongsToMany(Task::class, 'subuser_tasks')->withPivot('completed')->withTimestamps();
-    }
     public function subUsers()
     {
         return $this->belongsToMany(SubUser::class, 'subuser_tasks')
