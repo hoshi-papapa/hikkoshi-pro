@@ -17,8 +17,9 @@
     </nav>
 
     <div class="card mt-3">
-        @if ($subUser->user_image_path)
-            <img src="{{ asset('storage/' . $subUser->user_image_path) }}" alt="{{ $subUser->nickname }}" class="card-img-top custom-card-img">
+        @if ($subUser->user_image_path)                            
+            <img src="{{ $subUser->user_image_path ? $subUser->user_image_path : asset('images/default-avatar.png') }}" class="card-img-top" alt="{{ $subUser->nickname }}">
+            {{-- <img src="{{ asset('storage/' . $subUser->user_image_path) }}" alt="{{ $subUser->nickname }}" class="card-img-top custom-card-img"> --}}
         @endif
 
         <div class="card-body">
