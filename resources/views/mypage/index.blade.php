@@ -60,7 +60,6 @@
                 <!-- サブユーザーカード -->
                 @foreach($subUsers as $subUser)
                 <div class="col-md-4">
-                            <p>{{ $subUser->user_image_path }}</p>
                     <a href="{{ route('subusers.edit', $subUser) }}" class="text-decoration-none text-dark">
                         <div class="card mb-4">
                             <img src="{{ $subUser->user_image_path ? $subUser->user_image_path : asset('images/default-avatar.png') }}" class="card-img-top" alt="{{ $subUser->nickname }}">
