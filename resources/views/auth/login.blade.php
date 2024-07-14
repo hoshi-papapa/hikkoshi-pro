@@ -44,4 +44,9 @@
             </x-primary-button>
         </div>
     </form>
+
+    <!-- Register Link -->
+    <div class="mt-4 text-center">
+        <a href="{{ route('register') }}" class="underline text-sm text-gray-600 hover:text-gray-900">アカウントをお持ちではありませんか？こちらから登録してください</a>
+    </div>
 </x-guest-layout>

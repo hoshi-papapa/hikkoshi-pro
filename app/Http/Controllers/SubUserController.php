@@ -58,11 +58,6 @@ class SubUserController extends Controller
             $subUser->user_image_path = Storage::disk('s3')->url($path);
         }
 
-        // if ($request->hasFile('user_image_path')) {
-        //     $path = $request->file('user_image_path')->store('subusers', 'public');
-        //     $subUser->user_image_path = $path;
-        // }
-
         $subUser->save();
 
         return redirect()->route('mypage.index')->with('success', 'サブユーザーを登録しました');
@@ -106,16 +101,6 @@ class SubUserController extends Controller
             $path = $request->file('user_image_path')->store('subusers', 's3');
             $subUser->user_image_path = Storage::disk('s3')->url($path);
         }
-
-        // if ($request->hasFile('user_image_path')) {
-        //     // 古い画像を削除する処理が必要ならここに追加
-        //     if ($subUser->user_image_path && Storage::exists('public/' . $subUser->user_image_path)) {
-        //         Storage::delete('public/' . $subUser->user_image_path);
-        //     }
-
-        //     $path = $request->file('user_image_path')->store('subusers', 'public');
-        //     $subUser->user_image_path = $path;
-        // }
 
         $subUser->save();
 

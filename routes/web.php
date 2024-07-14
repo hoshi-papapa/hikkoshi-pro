@@ -20,27 +20,27 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+//ログアウト機能
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 
+//ユーザーの登録機能
+Route::get('/register', 'Auth\RegisterController@showRegistrationForm')->name('register');
+Route::post('/register', 'Auth\RegisterController@register');
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+//メール認証済みかつログイン中のユーザーのみが使用できるルート
+Route::middleware(['auth', 'verified'])->group(function () {
 
-Route::middleware('auth')->group(function () {
-    // Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    // Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    // Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
+    //やることリスト
     Route::get('/', [TaskController::class, 'index']);
     Route::resource('tasks', TaskController::class)->only(['index', 'store', 'update', 'destroy']);
     Route::patch('tasks/{task}/subusers/{subUser}/toggle-completion', [TaskController::class, 'toggleSubUserCompletion'])->name('tasks.toggleSubUserCompletion');
 
-
+    //マイページ
     Route::get('/mypage', [MyPageController::class, 'index'])->name('mypage.index');
     Route::get('/mypage/edit', [MyPageController::class, 'edit'])->name('mypage.edit');
     Route::patch('/mypage/update', [MyPageController::class, 'update'])->name('mypage.update');
 
+    //サブユーザー関連
     Route::get('/subusers', [SubUserController::class, 'index'])->name('subusers.index');
     Route::get('/subusers/create', [SubUserController::class, 'create'])->name('subusers.create');
     Route::post('/subusers', [SubUserController::class, 'store'])->name('subusers.store');
@@ -48,11 +48,5 @@ Route::middleware('auth')->group(function () {
     Route::put('/subusers/{subUser}', [SubUserController::class, 'update'])->name('subusers.update');
     Route::delete('/subusers/{subUser}', [SubUserController::class, 'destroy'])->name('subusers.destroy');
 });
-
-Route::resource('users', UserController::class);
-Route::resource('templatetasks', TemplateTaskController::class)->only(['index']);
-
-//Route::resource('tasks', TaskController::class);
-
 
 require __DIR__ . '/auth.php';
