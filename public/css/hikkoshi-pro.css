@@ -1,3 +1,21 @@
+/* ハンバーガーメニューの設定 */
+/* 基本スタイルの調整 */
+.navbar-nav .nav-item a {
+    display: block;
+    text-align: right; /* 右揃え */
+}
+
+/* スマホ版のスタイル調整 */
+@media (max-width: 767px) {
+    .navbar-nav .separator {
+        display: none; /* 区切り文字を非表示 */
+    }
+    
+    .navbar-nav .nav-item a {
+        text-align: right; /* 文字を右揃え */
+    }
+}
+
 tr.clickable-row {
     cursor: pointer;
 }

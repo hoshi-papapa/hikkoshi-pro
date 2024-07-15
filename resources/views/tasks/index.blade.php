@@ -45,107 +45,107 @@
     {{-- 目標の追加用モーダル --}}
     @include('modals.task-add-modal')
     
-    <div class="text-center mt-3">
+    <div class="text-center mt-3 mb-3">
         <a href="#" class="btn btn-danger btn-mycolor1" data-bs-toggle="modal" data-bs-target="#addTaskModal">
             目標の追加
         </a>
     </div>
-<!-- タスク一覧表示 -->
-@if (empty($tasks))
-    <p>タスクがありません。</p>
-@else
-    @if (!empty($categorizedTasks['threeWeeksBefore']))
-        <h3>3週間前までに終わらせるタスク</h3>
-        @include('tasks.partials.task-table', ['tasks' => $categorizedTasks['threeWeeksBefore']])
+    <!-- タスク一覧表示 -->
+    @if (empty($tasks))
+        <p>タスクがありません。</p>
+    @else
+        @if (!empty($categorizedTasks['threeWeeksBefore']))
+            <h3>3週間前までに終わらせるタスク</h3>
+            @include('tasks.partials.task-table', ['tasks' => $categorizedTasks['threeWeeksBefore']])
 
-        @foreach ($categorizedTasks['threeWeeksBefore'] as $task)
-            {{-- 目標の編集用モーダル --}}
-            @include('modals.task-edit-modal', ['task' => $task])
+            @foreach ($categorizedTasks['threeWeeksBefore'] as $task)
+                {{-- 目標の編集用モーダル --}}
+                @include('modals.task-edit-modal', ['task' => $task])
 
-            {{-- 目標の削除用モーダル --}}
-            @include('modals.task-delete-modal', ['task' => $task])
-        @endforeach
+                {{-- 目標の削除用モーダル --}}
+                @include('modals.task-delete-modal', ['task' => $task])
+            @endforeach
+        @endif
+
+        @if (!empty($categorizedTasks['twoWeeksBefore']))
+            <h3>2週間前までに終わらせるタスク</h3>
+            @include('tasks.partials.task-table', ['tasks' => $categorizedTasks['twoWeeksBefore']])
+
+            @foreach ($categorizedTasks['twoWeeksBefore'] as $task)
+                {{-- 目標の編集用モーダル --}}
+                @include('modals.task-edit-modal', ['task' => $task])
+
+                {{-- 目標の削除用モーダル --}}
+                @include('modals.task-delete-modal', ['task' => $task])
+            @endforeach
+        @endif
+
+        @if (!empty($categorizedTasks['oneWeekBefore']))
+            <h3>1週間前までに終わらせるタスク</h3>
+            @include('tasks.partials.task-table', ['tasks' => $categorizedTasks['oneWeekBefore']])
+
+            @foreach ($categorizedTasks['oneWeekBefore'] as $task)
+                {{-- 目標の編集用モーダル --}}
+                @include('modals.task-edit-modal', ['task' => $task])
+
+                {{-- 目標の削除用モーダル --}}
+                @include('modals.task-delete-modal', ['task' => $task])
+            @endforeach
+        @endif
+
+        @if (!empty($categorizedTasks['oneDayBefore']))
+            <h3>前日までに終わらせるタスク</h3>
+            @include('tasks.partials.task-table', ['tasks' => $categorizedTasks['oneDayBefore']])
+
+            @foreach ($categorizedTasks['oneDayBefore'] as $task)
+                {{-- 目標の編集用モーダル --}}
+                @include('modals.task-edit-modal', ['task' => $task])
+
+                {{-- 目標の削除用モーダル --}}
+                @include('modals.task-delete-modal', ['task' => $task])
+            @endforeach
+        @endif
+
+        @if (!empty($categorizedTasks['movingDay']))
+            <h3>当日終わらせるタスク</h3>
+            @include('tasks.partials.task-table', ['tasks' => $categorizedTasks['movingDay']])
+
+            @foreach ($categorizedTasks['movingDay'] as $task)
+                {{-- 目標の編集用モーダル --}}
+                @include('modals.task-edit-modal', ['task' => $task])
+
+                {{-- 目標の削除用モーダル --}}
+                @include('modals.task-delete-modal', ['task' => $task])
+            @endforeach
+        @endif
+
+        @if (!empty($categorizedTasks['oneWeekAfter']))
+            <h3>引っ越し後1週間以内に終わらせるタスク</h3>
+            @include('tasks.partials.task-table', ['tasks' => $categorizedTasks['oneWeekAfter']])
+
+            @foreach ($categorizedTasks['oneWeekAfter'] as $task)
+                {{-- 目標の編集用モーダル --}}
+                @include('modals.task-edit-modal', ['task' => $task])
+
+                {{-- 目標の削除用モーダル --}}
+                @include('modals.task-delete-modal', ['task' => $task])
+            @endforeach
+        @endif
+
+        @if (!empty($categorizedTasks['earlyAfterMoving']))
+            <h3>引っ越し後早めに終わらせるタスク</h3>
+            @include('tasks.partials.task-table', ['tasks' => $categorizedTasks['earlyAfterMoving']])
+
+            @foreach ($categorizedTasks['earlyAfterMoving'] as $task)
+                {{-- 目標の編集用モーダル --}}
+                @include('modals.task-edit-modal', ['task' => $task])
+
+                {{-- 目標の削除用モーダル --}}
+                @include('modals.task-delete-modal', ['task' => $task])
+            @endforeach
+        @endif
+
     @endif
-
-    @if (!empty($categorizedTasks['twoWeeksBefore']))
-        <h3>2週間前までに終わらせるタスク</h3>
-        @include('tasks.partials.task-table', ['tasks' => $categorizedTasks['twoWeeksBefore']])
-
-        @foreach ($categorizedTasks['twoWeeksBefore'] as $task)
-            {{-- 目標の編集用モーダル --}}
-            @include('modals.task-edit-modal', ['task' => $task])
-
-            {{-- 目標の削除用モーダル --}}
-            @include('modals.task-delete-modal', ['task' => $task])
-        @endforeach
-    @endif
-
-    @if (!empty($categorizedTasks['oneWeekBefore']))
-        <h3>1週間前までに終わらせるタスク</h3>
-        @include('tasks.partials.task-table', ['tasks' => $categorizedTasks['oneWeekBefore']])
-
-        @foreach ($categorizedTasks['oneWeekBefore'] as $task)
-            {{-- 目標の編集用モーダル --}}
-            @include('modals.task-edit-modal', ['task' => $task])
-
-            {{-- 目標の削除用モーダル --}}
-            @include('modals.task-delete-modal', ['task' => $task])
-        @endforeach
-    @endif
-
-    @if (!empty($categorizedTasks['oneDayBefore']))
-        <h3>前日までに終わらせるタスク</h3>
-        @include('tasks.partials.task-table', ['tasks' => $categorizedTasks['oneDayBefore']])
-
-        @foreach ($categorizedTasks['oneDayBefore'] as $task)
-            {{-- 目標の編集用モーダル --}}
-            @include('modals.task-edit-modal', ['task' => $task])
-
-            {{-- 目標の削除用モーダル --}}
-            @include('modals.task-delete-modal', ['task' => $task])
-        @endforeach
-    @endif
-
-    @if (!empty($categorizedTasks['movingDay']))
-        <h3>当日終わらせるタスク</h3>
-        @include('tasks.partials.task-table', ['tasks' => $categorizedTasks['movingDay']])
-
-        @foreach ($categorizedTasks['movingDay'] as $task)
-            {{-- 目標の編集用モーダル --}}
-            @include('modals.task-edit-modal', ['task' => $task])
-
-            {{-- 目標の削除用モーダル --}}
-            @include('modals.task-delete-modal', ['task' => $task])
-        @endforeach
-    @endif
-
-    @if (!empty($categorizedTasks['oneWeekAfter']))
-        <h3>引っ越し後1週間以内に終わらせるタスク</h3>
-        @include('tasks.partials.task-table', ['tasks' => $categorizedTasks['oneWeekAfter']])
-
-        @foreach ($categorizedTasks['oneWeekAfter'] as $task)
-            {{-- 目標の編集用モーダル --}}
-            @include('modals.task-edit-modal', ['task' => $task])
-
-            {{-- 目標の削除用モーダル --}}
-            @include('modals.task-delete-modal', ['task' => $task])
-        @endforeach
-    @endif
-
-    @if (!empty($categorizedTasks['earlyAfterMoving']))
-        <h3>引っ越し後早めに終わらせるタスク</h3>
-        @include('tasks.partials.task-table', ['tasks' => $categorizedTasks['earlyAfterMoving']])
-
-        @foreach ($categorizedTasks['earlyAfterMoving'] as $task)
-            {{-- 目標の編集用モーダル --}}
-            @include('modals.task-edit-modal', ['task' => $task])
-
-            {{-- 目標の削除用モーダル --}}
-            @include('modals.task-delete-modal', ['task' => $task])
-        @endforeach
-    @endif
-
-@endif
 </div>
 <script>
     document.addEventListener('DOMContentLoaded', function() {

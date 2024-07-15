@@ -15,8 +15,6 @@ use Carbon\Carbon;
 
 class TaskController extends Controller
 {
-
-
     public function index(Request $request)
     {
         $user = auth()->user();

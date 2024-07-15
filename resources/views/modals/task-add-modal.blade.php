@@ -103,7 +103,6 @@
     // チェックボックスの状態変更を監視
     document.querySelectorAll('.add-sub-user-checkbox').forEach(function(checkbox) {
         checkbox.addEventListener('change', function() {
-            console.log('editじゃなくてaddが動いているかも');
             var subUserId = this.value;
             var toggleContainer = document.getElementById('sub_user_toggle_container_' + subUserId);
             var toggle = document.getElementById('sub_user_toggle_' + subUserId);

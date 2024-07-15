@@ -16,7 +16,7 @@
                     </a>
                 </li>
                 
-                <li class="nav-item me-2 align-self-center">|</li> <!-- 区切り文字 -->
+                <li class="nav-item me-2 align-self-center separator">|</li> <!-- 区切り文字 -->
 
                 <li class="nav-item me-2">
                     <a href="{{route('mypage.index') }}" class="fw-bold text-mycolor1" style="text-decoration: none;">
