@@ -10,7 +10,7 @@
     @endif
     
     <nav aria-label="breadcrumb">
-        <ol class="breadcrumb" style="font-size: 1.75rem;">
+        <ol class="breadcrumb">
             <li class="breadcrumb-item"><a href="{{ route('mypage.index') }}">マイページ</a></li>
             <li class="breadcrumb-item active" aria-current="page">サブユーザー情報変更</li>
         </ol>

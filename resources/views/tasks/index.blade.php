@@ -17,7 +17,7 @@
     @endif
 
     <nav aria-label="breadcrumb">
-        <ol class="breadcrumb" style="font-size: 1.75rem;">
+        <ol class="breadcrumb">
             @if ($selectedSubUser)
                 <li class="breadcrumb-item"><a href="{{ route('tasks.index') }}">やることリスト</a></li>
                 <li class="breadcrumb-item active text-mycolor1" aria-current="page">{{ $selectedSubUser->nickname }}さんのやることリスト</li>
@@ -55,7 +55,7 @@
         <p>タスクがありません。</p>
     @else
         @if (!empty($categorizedTasks['threeWeeksBefore']))
-            <h3>3週間前までに終わらせるタスク</h3>
+            <h3 class="mt-3">3週間前までに終わらせるタスク</h3>
             @include('tasks.partials.task-table', ['tasks' => $categorizedTasks['threeWeeksBefore']])
 
             @foreach ($categorizedTasks['threeWeeksBefore'] as $task)
@@ -68,7 +68,7 @@
         @endif
 
         @if (!empty($categorizedTasks['twoWeeksBefore']))
-            <h3>2週間前までに終わらせるタスク</h3>
+            <h3 class="mt-3">2週間前までに終わらせるタスク</h3>
             @include('tasks.partials.task-table', ['tasks' => $categorizedTasks['twoWeeksBefore']])
 
             @foreach ($categorizedTasks['twoWeeksBefore'] as $task)
@@ -81,7 +81,7 @@
         @endif
 
         @if (!empty($categorizedTasks['oneWeekBefore']))
-            <h3>1週間前までに終わらせるタスク</h3>
+            <h3 class="mt-3">1週間前までに終わらせるタスク</h3>
             @include('tasks.partials.task-table', ['tasks' => $categorizedTasks['oneWeekBefore']])
 
             @foreach ($categorizedTasks['oneWeekBefore'] as $task)
@@ -94,7 +94,7 @@
         @endif
 
         @if (!empty($categorizedTasks['oneDayBefore']))
-            <h3>前日までに終わらせるタスク</h3>
+            <h3 class="mt-3">前日までに終わらせるタスク</h3>
             @include('tasks.partials.task-table', ['tasks' => $categorizedTasks['oneDayBefore']])
 
             @foreach ($categorizedTasks['oneDayBefore'] as $task)
@@ -107,7 +107,7 @@
         @endif
 
         @if (!empty($categorizedTasks['movingDay']))
-            <h3>当日終わらせるタスク</h3>
+            <h3 class="mt-3">当日終わらせるタスク</h3>
             @include('tasks.partials.task-table', ['tasks' => $categorizedTasks['movingDay']])
 
             @foreach ($categorizedTasks['movingDay'] as $task)
@@ -120,7 +120,7 @@
         @endif
 
         @if (!empty($categorizedTasks['oneWeekAfter']))
-            <h3>引っ越し後1週間以内に終わらせるタスク</h3>
+            <h3 class="mt-3">引っ越し後1週間以内に終わらせるタスク</h3>
             @include('tasks.partials.task-table', ['tasks' => $categorizedTasks['oneWeekAfter']])
 
             @foreach ($categorizedTasks['oneWeekAfter'] as $task)
@@ -133,7 +133,7 @@
         @endif
 
         @if (!empty($categorizedTasks['earlyAfterMoving']))
-            <h3>引っ越し後早めに終わらせるタスク</h3>
+            <h3 class="mt-3">引っ越し後早めに終わらせるタスク</h3>
             @include('tasks.partials.task-table', ['tasks' => $categorizedTasks['earlyAfterMoving']])
 
             @foreach ($categorizedTasks['earlyAfterMoving'] as $task)

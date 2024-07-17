@@ -17,7 +17,7 @@
     @endif
 
     <nav aria-label="breadcrumb">
-        <ol class="breadcrumb" style="font-size: 1.75rem;">
+        <ol class="breadcrumb">
             <li class="breadcrumb-item active text-mycolor1" aria-current="page">マイページ</li>
         </ol>
     </nav>

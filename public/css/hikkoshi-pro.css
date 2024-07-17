@@ -14,6 +14,13 @@
     .navbar-nav .nav-item a {
         text-align: right; /* 文字を右揃え */
     }
+
+    .navbar-nav .nav-item{
+        padding-top: 10px;
+    }
+    .navbar-nav {
+        margin-top: 5px;
+    }
 }
 
 tr.clickable-row {
