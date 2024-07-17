@@ -20,9 +20,16 @@
                 <x-application-logo class="w-20 h-20 fill-current text-gray-500"/>
             </div>
 
-            <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">
+            <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg my-mobile-style-slot">
                 {{ $slot }}
             </div>
         </div>
     </body>
 </html>
+<style>
+    @media (max-width: 767px){
+        .my-mobile-style-slot {
+        max-width: 90%;
+    }
+}
+</style>
