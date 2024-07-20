@@ -18,7 +18,7 @@
         <div class="col-7 col-md-8 col-lg-9" data-bs-toggle="modal" data-bs-target="#editTaskModal{{ $task->id }}">
           {{ $task->title }}
         </div>
-        <div class="col-4 col-md-3 col-lg-2" data-bs-toggle="modal" data-bs-target="#editTaskModal{{ $task->id }}">
+        <div class="col-4 col-md-3 col-lg-2" data-bs-toggle="modal" data-bs-target="#editTaskModal{{ $task->id }}" style="text-align: right;">
           {{ $task->end_date }}
         </div>
       </div>
