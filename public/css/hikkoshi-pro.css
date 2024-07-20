@@ -23,9 +23,40 @@
     }
 }
 
+/* テーブルの設定 */
+.fixed-width-table{
+    width: 100%;
+}
+.fixed-width-table th.col1, .fixed-width-table td.col1 {
+    width: 10%; 
+    text-align: center;
+}.fixed-width-table th.col2, .fixed-width-table td.col2 {
+    width: 20%; 
+    text-align: center;
+}.fixed-width-table th.col3, .fixed-width-table td.col3 {
+    width: 20%; 
+    text-align: center;
+}.fixed-width-table th.col4, .fixed-width-table td.col4 {
+    width: 20%; 
+    text-align: center;
+}.fixed-width-table th.col5, .fixed-width-table td.col5 {
+    width: 20%; 
+    text-align: center;
+}.fixed-width-table th.col6, .fixed-width-table td.col6 {
+    width: 10%; 
+    text-align: center;
+}
+.fixed-width-table th.col2, .fixed-width-table td.col2 { width: 150px; }
+.fixed-width-table th.col3, .fixed-width-table td.col3 { width: 200px; }
+.fixed-width-table th.col4, .fixed-width-table td.col4 { width: 250px; }
+.fixed-width-table th.col5, .fixed-width-table td.col5 { width: 300px; }
+.fixed-width-table th.col6, .fixed-width-table td.col6 { width: 350px; }
+
 tr.clickable-row {
     cursor: pointer;
 }
+
+/* 色の設定 */
 .bg-mycolor1 {
     background-color: #E6A4B4;
 }

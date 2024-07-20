@@ -1,18 +1,18 @@
-<table class="table">
+<table class="table table-hover fixed-width-table">
     <thead>
         <tr>
-            <th>完了・未完了</th>
-            <th>タイトル</th>
-            <th>説明</th>
-            <th>開始日</th>
-            <th>終了日</th>
-            <th>アクション</th>
+            <th class="col1">完了・未完了</th>
+            <th class="col2">タイトル</th>
+            <th class="col3">説明</th>
+            <th class="col4">開始日</th>
+            <th class="col5">終了日</th>
+            <th class="col6">アクション</th>
         </tr>
     </thead>
     <tbody>
         @foreach ($tasks as $task)
             <tr class="clickable-row">
-                <td>
+                <td class="col1">
                     @php
                         $allCompleted = $task->subUsers->every(fn($subUser) => $subUser->pivot->completed);
                         $allNotCompleted = $task->subUsers->every(fn($subUser) => !$subUser->pivot->completed);
@@ -25,11 +25,11 @@
                         <i class="fas fa-circle"></i>
                     @endif
                 </td>
-                <td data-bs-toggle="modal" data-bs-target="#editTaskModal{{ $task->id }}">{{ $task->id }} {{ $task->title }}</td>
-                <td data-bs-toggle="modal" data-bs-target="#editTaskModal{{ $task->id }}">{{ $task->description }}</td>
-                <td data-bs-toggle="modal" data-bs-target="#editTaskModal{{ $task->id }}">{{ $task->start_date }}</td>
-                <td data-bs-toggle="modal" data-bs-target="#editTaskModal{{ $task->id }}">{{ $task->end_date }}</td>
-                <td>
+                <td data-bs-toggle="modal" data-bs-target="#editTaskModal{{ $task->id }}" class="col2">{{ $task->id }} {{ $task->title }}</td>
+                <td data-bs-toggle="modal" data-bs-target="#editTaskModal{{ $task->id }}" class="col3">{{ $task->description }}</td>
+                <td data-bs-toggle="modal" data-bs-target="#editTaskModal{{ $task->id }}" class="col4">{{ $task->start_date }}</td>
+                <td data-bs-toggle="modal" data-bs-target="#editTaskModal{{ $task->id }}" class="col5">{{ $task->end_date }}</td>
+                <td class="col6">
                     <button class="btn btn-sm btn-danger delete-button" data-bs-toggle="modal" data-bs-target="#deleteTaskModal{{ $task->id }}">削除</button>
                 </td>
             </tr>
