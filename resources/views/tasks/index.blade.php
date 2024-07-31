@@ -147,6 +147,7 @@
 
     @endif
 </div>
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // チェックボックスの状態変更を監視
@@ -176,7 +177,59 @@
                 form.querySelector('.toggle-completion-button').click();
             }
         });
-    });
+
+        
+        document.querySelectorAll('.editTaskForm').forEach(function(form){
+            form.addEventListener('submit', function(event){
+
+                event.preventDefault();
+
+                var modal = form.closest('.modal');
+
+                // Ajaxでフォームを送信
+                var formData = new FormData(this);
+
+                fetch(this.action, {
+                    method: this.method,
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.errors) {
+                        // バリデーションエラーがある場合はエラーメッセージを表示
+                        handleFormErrors(data.errors, modal);
+                    } else if (data.redirect) {
+                        // 正常に作成できた場合はリダイレクト
+                        window.location.href = data.redirect;
+                    } else {
+                        console.error('Unexpected response:', data);
+                        alert('Unexpected error occurred. Please try again later.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Unexpected error:', error);
+                    alert('Unexpected error occurred. Please try again later.');
+                });
+            });
+
+            function handleFormErrors(errors, modal) {
+                var errorMessagesDiv = modal.querySelector('.editErrorMessages');
+                errorMessagesDiv.classList.remove('d-none'); // エラーメッセージコンテナを表示
+
+                var errorMessage = '<ul style="margin-bottom: 0;">';
+                for (var key in errors) {
+                    errorMessage += '<li>' + errors[key].join(', ') + '</li>';
+                }
+                errorMessage += '</ul>';
+
+                errorMessagesDiv.innerHTML = errorMessage;
+            }
+        });
+    });    
+
 </script>
 
 @endsection

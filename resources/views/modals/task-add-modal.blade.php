@@ -10,7 +10,7 @@
             <form id="addTaskForm" action="{{ route('tasks.store') }}" method="POST">
                 @csrf
                 <div class="modal-body">
-
+                    <!-- エラーメッセージがある場合表示 -->
                     <div id="errorMessages" class="alert alert-danger d-none"></div>
 
                     <div class="form-group">
@@ -45,6 +45,7 @@
                         @endforeach
                     </div>
                 </div>
+                
                 <div class="modal-footer bg-mycolor3 text-mycolor1">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">閉じる</button>
                     <button type="submit" class="btn btn-danger btn-mycolor1">保存</button>

@@ -6,10 +6,14 @@
                 <h5 class="modal-title" id="editTaskModalLabel{{ $task->id }}">タスク編集</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="閉じる"></button>
             </div>
-            <form id="editTaskForm{{ $task->id }}" action="{{ route('tasks.update', $task) }}" method="POST">
+
+            <form id="editTaskForm{{ $task->id }}" class="editTaskForm" action="{{ route('tasks.update', $task) }}" method="POST">
                 @csrf
                 @method('patch')
                 <div class="modal-body">
+                    <!-- エラーメッセージがある場合表示 -->
+                    <div class="alert alert-danger d-none editErrorMessages"></div>
+
                     <input type="hidden" id="editTaskId" name="id" value="{{ $task->id }}">
                     <div class="form-group">
                         <label for="editTitle{{ $task->id }}">タイトル</label>
@@ -46,6 +50,7 @@
                         <div data-bs-toggle="modal" data-bs-target="#deleteTaskModal{{ $task->id }}">このタスクを削除する</div >
                     </div>
                 </div>
+
                 <div class="modal-footer bg-mycolor3 text-mycolor1">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">閉じる</button>
                     <button type="submit" class="btn btn-danger btn-mycolor1">保存</button>
@@ -54,51 +59,3 @@
         </div>
     </div>
 </div>
-
-<script>
-    document.getElementById('editTaskForm').addEventListener('submit', function(event) {
-        event.preventDefault(); // フォームの通常の送信を防止
-
-        // Ajaxでフォームを送信
-        var formData = new FormData(this);
-
-        fetch(this.action, {
-            method: this.method,
-            body: formData,
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest'
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.errors) {
-                // バリデーションエラーがある場合はエラーメッセージを表示
-                handleFormErrors(data.errors);
-            } else if (data.redirect) {
-                // 正常に作成できた場合はリダイレクト
-                window.location.href = data.redirect;
-            } else {
-                console.error('Unexpected response:', data);
-                alert('Unexpected error occurred. Please try again later.');
-            }
-        })
-        .catch(error => {
-            console.error('Unexpected error:', error);
-            alert('Unexpected error occurred. Please try again later.');
-        });
-    });
-
-    function handleFormErrors(errors) {
-        var errorMessagesDiv = document.getElementById('errorMessages');
-        errorMessagesDiv.classList.remove('d-none'); // エラーメッセージコンテナを表示
-
-        var errorMessage = '<ul style="margin-bottom: 0;">';
-        for (var key in errors) {
-            errorMessage += '<li>' + errors[key].join(', ') + '</li>';
-        }
-        errorMessage += '</ul>';
-
-        errorMessagesDiv.innerHTML = errorMessage;
-    }
-
-</script>
