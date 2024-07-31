@@ -167,6 +167,15 @@
                 }
             });
         });
+
+        //完了・未完了ボタンがクリックされたとき
+        $('.status').on('click', function(){
+            var subUserId = $('#sub_user_id').val();
+            if (subUserId){
+                var form = this.querySelector('form');
+                form.querySelector('.toggle-completion-button').click();
+            }
+        });
     });
 </script>
 

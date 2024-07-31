@@ -102,3 +102,16 @@ tr.clickable-row {
     max-height: 400px;
     object-fit: cover;
 }
+
+/* フォームのカスタマイズ */
+.modal-delete-button {
+    /* 通常のスタイル */
+    cursor: default; /* デフォルトのカーソル */
+    transition: opacity 0.3s; /* 色変更のアニメーション */
+}
+
+.modal-delete-button:hover {
+    /* マウスカーソルが乗ったときのスタイル */
+    opacity: 0.5; /* テキストの色を薄くする */
+    cursor: pointer; /* カーソルをポインターに変更 */
+}

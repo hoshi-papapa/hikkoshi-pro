@@ -42,7 +42,9 @@
                             </div>
                         @endforeach
                     </div>
-
+                    <div class="mt-5 modal-delete-button">
+                        <div data-bs-toggle="modal" data-bs-target="#deleteTaskModal{{ $task->id }}">このタスクを削除する</div >
+                    </div>
                 </div>
                 <div class="modal-footer bg-mycolor3 text-mycolor1">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">閉じる</button>

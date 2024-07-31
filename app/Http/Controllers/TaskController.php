@@ -205,14 +205,14 @@ class TaskController extends Controller
             }
         }
 
-        return redirect()->route('tasks.index')->with('success', 'タスクを更新しました。');
+        return redirect()->back()->with('success', 'タスクを更新しました。');
     }
 
     public function destroy(Task $task)
     {
         $task->delete();
 
-        return redirect()->route('tasks.index')->with('success', 'タスクを削除しました。');
+        return redirect()->back()->with('success', 'タスクを削除しました。');
     }
 
     public function toggleSubUserCompletion(Task $task, SubUser $subUser)
