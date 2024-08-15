@@ -204,8 +204,12 @@ class TaskController extends Controller
                 }
             }
         }
+        //成功メッセージをフラッシュ
+        Session::flash('success', 'タスクを更新しました。');
 
-        return redirect()->back()->with('success', 'タスクを更新しました。');
+        //タスク一覧ページにリダイレクト
+        return response()->json(['redirect' => route('tasks.index')]);
+        // return redirect()->back()->with('success', 'タスクを更新しました。');
     }
 
     public function destroy(Task $task)

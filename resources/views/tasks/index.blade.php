@@ -150,35 +150,7 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // チェックボックスの状態変更を監視
-        document.querySelectorAll('.sub-user-checkbox').forEach(function(checkbox) {
-            checkbox.addEventListener('change', function() {
-                var idParts = this.id.split('_');
-                var taskId = idParts[idParts.length - 1]; // IDの最後の部分をtaskIdとして取得
-                var subUserId = this.value;            
-
-                var toggleContainer = document.getElementById('sub_user_toggle_container_' + subUserId + '_task_' + taskId);
-                var toggle = document.getElementById('sub_user_toggle_' + subUserId + '_task_' + taskId);
-
-                if (this.checked) {
-                    toggleContainer.style.display = 'inline-block'; // トグルボタンを表示
-                } else {
-                    toggleContainer.style.display = 'none'; // トグルボタンを非表示
-                    toggle.checked = false; // トグルボタンの値を false に設定
-                }
-            });
-        });
-
-        //完了・未完了ボタンがクリックされたとき
-        $('.status').on('click', function(){
-            var subUserId = $('#sub_user_id').val();
-            if (subUserId){
-                var form = this.querySelector('form');
-                form.querySelector('.toggle-completion-button').click();
-            }
-        });
-
-        
+   
         document.querySelectorAll('.editTaskForm').forEach(function(form){
             form.addEventListener('submit', function(event){
 
@@ -206,12 +178,12 @@
                         window.location.href = data.redirect;
                     } else {
                         console.error('Unexpected response:', data);
-                        alert('Unexpected error occurred. Please try again later.');
+                        alert('aaUnexpected error occurred. Please try again later.');
                     }
                 })
                 .catch(error => {
                     console.error('Unexpected error:', error);
-                    alert('Unexpected error occurred. Please try again later.');
+                    alert('bbUnexpected error occurred. Please try again later.');
                 });
             });
 
@@ -228,6 +200,35 @@
                 errorMessagesDiv.innerHTML = errorMessage;
             }
         });
+    
+            // チェックボックスの状態変更を監視
+        document.querySelectorAll('.sub-user-checkbox').forEach(function(checkbox) {
+            checkbox.addEventListener('change', function() {
+                var idParts = this.id.split('_');
+                var taskId = idParts[idParts.length - 1]; // IDの最後の部分をtaskIdとして取得
+                var subUserId = this.value;            
+
+                var toggleContainer = document.getElementById('sub_user_toggle_container_' + subUserId + '_task_' + taskId);
+                var toggle = document.getElementById('sub_user_toggle_' + subUserId + '_task_' + taskId);
+
+                if (this.checked) {
+                    toggleContainer.style.display = 'inline-block'; // トグルボタンを表示
+                } else {
+                    toggleContainer.style.display = 'none'; // トグルボタンを非表示
+                    toggle.checked = false; // トグルボタンの値を false に設定
+                }
+            });
+        });
+
+        //完了・未完了ボタンがクリックされたとき
+        $('.status').on('click', function(){
+            var subUserId = $('#sub_user_id').val();
+            if (subUserId){
+                var form = this.querySelector('form');
+                form.querySelector('.toggle-completion-button').click();
+            }
+        });
+        
     });    
 
 </script>
