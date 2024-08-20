@@ -35,6 +35,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('tasks', TaskController::class)->only(['index', 'store', 'update', 'destroy']);
     Route::patch('tasks/{task}/subusers/{subUser}/toggle-completion', [TaskController::class, 'toggleSubUserCompletion'])->name('tasks.toggleSubUserCompletion');
 
+    //やることカレンダー
+    Route::get('/calendar', [TaskController::class, 'calendar'])->name('calendar.index');
+    Route::get('/calendar/get_events', [TaskController::class, 'getEvents'])->name('calendar.getEvents');
+
     //マイページ
     Route::get('/mypage', [MyPageController::class, 'index'])->name('mypage.index');
     Route::get('/mypage/edit', [MyPageController::class, 'edit'])->name('mypage.edit');

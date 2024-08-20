@@ -230,4 +230,33 @@ class TaskController extends Controller
 
         return redirect()->back()->with('success', 'タスクの完了状態を変更しました。');
     }
+
+    public function calendar()
+    {
+        return view('calendar.index')->with('success', 'あれれ');
+    }
+
+    public function getEvents()
+    {
+        return [
+            [
+                'title' => '美容院',
+                'description' => '人気の美容室予約取れた',
+                'start' => '2024-08-10',
+                'end'   => '2024-08-10',
+            ],
+            [
+                'title' => 'シルバーウィーク旅行',
+                'description' => '人気の旅館の予約が取れた',
+                'start' => '2024-08-20 10:00:00',
+                'end'   => '2024-08-22 18:00:00',
+                'url'   => 'https://admin.juno-blog.site',
+            ],
+            [
+                'title' => '給料日',
+                'start' => '2024-08-30',
+                'color' => '#ff44cc',
+            ],
+        ];
+    }
 }
