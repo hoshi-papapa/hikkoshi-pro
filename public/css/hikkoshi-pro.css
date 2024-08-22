@@ -162,8 +162,11 @@ tr.clickable-row {
 }.fc .fc-button-primary:active {
     background-color: #C5808A;
     border-color: #C5808A;
+<<<<<<< HEAD
 }
 
 .fc-toolbar-chunk:nth-child(1) .fc-today-button{
     visibility: hidden;
+=======
+>>>>>>> 9948abb5decdab04ec80b3fb6b800daa5c7aaf69
 }
