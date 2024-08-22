@@ -66,11 +66,7 @@
             ],
 
             headerToolbar: {
-<<<<<<< HEAD
                 left: "prev today",
-=======
-                left: "prev",
->>>>>>> 9948abb5decdab04ec80b3fb6b800daa5c7aaf69
                 center: "title",
                 right: "today next"
             },
