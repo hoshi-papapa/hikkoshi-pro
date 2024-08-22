@@ -117,14 +117,49 @@ tr.clickable-row {
 }
 
 /* カレンダー */
+.fc-toolbar-title{
+    color: #4B2E2E;
+}
 .fc-col-header-cell-cushion,
 .fc-daygrid-day-number,
 .fc-daygrid-day-top{
-    color: #333;
+    color: #4B2E2E;
+    text-decoration: none;
+
 }
-.fc-day-sat{
-    background-color: #cce3f6;
+.holidays {
+    display: none;
 }
-.fc-day-sun{
-    background-color: #f4d0df;
+.fc-daygrid-day:has(.holidays),
+.fc-day.fc-day-sun{
+    background-color: #F3D7CA;
+}
+.fc-day.fc-day-sat{
+    background-color: #d5e5f3;
+}
+
+.fc-theme-standard td,
+.fc-theme-standard th {
+    border: 1px solid #4B2E2E;
+}
+
+.fc .fc-scrollgrid table {
+    border-left-style: none;
+    border-right-style: hidden;
+    border-top-style: none;
+    border-bottom-style: hidden;
+}
+
+.fc .fc-button-primary {
+    background-color: #C5808A;
+    border-color: #C5808A;
+}.fc .fc-button-primary:disabled {
+    background-color: #C5808A;
+    border-color: #C5808A;
+}.fc .fc-button-primary:hover {
+    background-color: #C5808A;
+    border-color: #C5808A;
+}.fc .fc-button-primary:active {
+    background-color: #C5808A;
+    border-color: #C5808A;
 }

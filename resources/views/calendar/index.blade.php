@@ -1,7 +1,9 @@
 @extends('layouts.app')
 
 @section('head')    
-    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar-scheduler@6.1.15/index.global.min.js'></script>
+    <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/google-calendar@6.1.15/index.global.min.js"></script>
+
     <script>
 
         document.addEventListener('DOMContentLoaded', function() {
@@ -47,25 +49,40 @@
     document.addEventListener('DOMContentLoaded', function() {
         var calendarEl = document.getElementById('calendar');
         var calendar = new FullCalendar.Calendar(calendarEl, {
+
+            googleCalendarApiKey: 'AIzaSyDkGqlgR5Q56Fl5sn9vHhF8O_zfbG-tZmQ',            
+            eventSources: [
+                {
+                    googleCalendarId: 'ja.japanese#holiday@group.v.calendar.google.com', //日本の休日
+                    className: 'holidays',
+                    textColor: 'red',
+                    backgroundColor: '#ffffff00',
+                    borderColor: '#ffffff00'
+                },
+                {
+                    url: '{{ route('calendar.getEvents') }}', //自分のタスク
+                    className: 'my-events'
+                }
+            ],
+
+            headerToolbar: {
+                left: "prev",
+                center: "title",
+                right: "today next"
+            },
+
             initialView: 'dayGridMonth',
             locale: 'ja',
             height: 'auto',
-            firstDay: 1,
-            headerToolbar: {
-                left: "",
-                center: "title",
-                right: "today prev,next"
-            },
+            firstDay: 0,
             buttonText: {
                 today: '今月',
-                list: 'リスト'
             },
             noEventsContent: 'タスクはありません',
-            eventSources: [
-                {
-                    url: '{{ route('calendar.getEvents') }}',
-                },
-            ],
+
+            dayCellContent: function (e) {
+                return e.dayNumberText.replace('日', '');
+            },
             eventSourceFailure () { 
                 console.error('エラーが発生しました。');
             },
@@ -78,8 +95,9 @@
                     container: 'body',
                     html: true
                 });
-            }
+            },
         });
+        
         calendar.render();
     });
 </script>
