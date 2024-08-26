@@ -137,6 +137,9 @@ tr.clickable-row {
 .fc-day.fc-day-sat{
     background-color: #d5e5f3;
 }
+.fc .fc-daygrid-day.fc-day-today {
+    background-color: #E6A4B4;
+}
 
 .fc-theme-standard td,
 .fc-theme-standard th {
@@ -165,4 +168,8 @@ tr.clickable-row {
 }
 .fc-toolbar-chunk:nth-child(1) .fc-today-button{
     visibility: hidden;
+}
+
+.fc-event-title-container {
+    cursor: pointer;
 }

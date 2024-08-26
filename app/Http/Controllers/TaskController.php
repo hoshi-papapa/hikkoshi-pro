@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Log;
 use App\Models\SubUser;
 use App\Models\Task;
 use App\Models\SubUserTask;
@@ -236,27 +237,43 @@ class TaskController extends Controller
         return view('calendar.index')->with('success', 'あれれ');
     }
 
-    public function getEvents()
+    public function getEvents(Request $request)
     {
-        return [
-            [
-                'title' => '美容院',
-                'description' => '人気の美容室予約取れた',
-                'start' => '2024-08-10',
-                'end'   => '2024-08-10',
-            ],
-            [
-                'title' => 'シルバーウィーク旅行',
-                'description' => '人気の旅館の予約が取れた',
-                'start' => '2024-08-20 10:00:00',
-                'end'   => '2024-08-22 18:00:00',
-                'url'   => 'https://admin.juno-blog.site',
-            ],
-            [
-                'title' => '給料日',
-                'start' => '2024-08-30',
-                'color' => '#ff44cc',
-            ],
-        ];
+        $user = auth()->user();
+        $subUsers = $user->subUsers;
+        $selectedSubUserId = $request->input('sub_user_id');
+        $selectedSubUser = $subUsers->find($selectedSubUserId);
+
+        // メインユーザーに関連するサブユーザーのIDを取得
+        $subUserIds = $subUsers->pluck('id')->toArray();
+
+        // 条件に応じてタスクをフィルタリングし、関連するサブユーザーの情報をプリロードした状態でクエリを構築する
+        $tasksQuery = Task::with('subUsers')
+            ->whereHas('subUsers', function ($query) use ($subUserIds) {
+                $query->whereIn('sub_user_id', $subUserIds);
+            })
+            ->when($selectedSubUserId, function ($query) use ($selectedSubUserId) {
+                return $query->whereHas('subUsers', function ($query) use ($selectedSubUserId) {
+                    $query->where('sub_user_id', $selectedSubUserId);
+                });
+            });
+
+        $tasks = $tasksQuery->get();
+
+        $events = $tasks->map(function ($task) {
+            $sDate = Carbon::parse($task->start_date);
+            $eDate = Carbon::parse($task->end_date);
+
+            return [
+                'title' => $task->title,
+                'description' => $task->description,
+                'start' => $sDate->format('Y-m-d'),
+                'end' => $eDate->format('Y-m-d'),
+            ];
+        })->toArray();
+
+        Log::info($events);
+
+        return $events;
     }
 }
