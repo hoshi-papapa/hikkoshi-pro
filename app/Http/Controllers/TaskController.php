@@ -247,15 +247,13 @@ class TaskController extends Controller
         // メインユーザーに関連するサブユーザーのIDを取得
         $subUserIds = $subUsers->pluck('id')->toArray();
 
-        // 条件に応じてタスクをフィルタリングし、関連するサブユーザーの情報をプリロードした状態でクエリを構築する
+        // サブユーザーが少なくとも一人でも完了していない場合、そのタスクを取得する
         $tasksQuery = Task::with('subUsers')
             ->whereHas('subUsers', function ($query) use ($subUserIds) {
                 $query->whereIn('sub_user_id', $subUserIds);
             })
-            ->when($selectedSubUserId, function ($query) use ($selectedSubUserId) {
-                return $query->whereHas('subUsers', function ($query) use ($selectedSubUserId) {
-                    $query->where('sub_user_id', $selectedSubUserId);
-                });
+            ->whereHas('subUsers', function ($query) {
+                $query->where('completed', false);
             });
 
         $tasks = $tasksQuery->get();

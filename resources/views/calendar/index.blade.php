@@ -3,18 +3,6 @@
 @section('head')    
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar-scheduler@6.1.15/index.global.min.js'></script>
     <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/google-calendar@6.1.15/index.global.min.js"></script>
-
-    <script>
-
-        document.addEventListener('DOMContentLoaded', function() {
-            var calendarEl = document.getElementById('calendar');
-            var calendar = new FullCalendar.Calendar(calendarEl, {
-            initialView: 'dayGridMonth'
-            });
-            calendar.render();
-        });
-
-    </script>
 @endsection
 
 @section('content')
@@ -35,13 +23,14 @@
 
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item active text-mycolor1" aria-current="page">やることカレンダー</li>
+            <li class="breadcrumb-item active" aria-current="page">やることカレンダー</li>
         </ol>
     </nav>
 
     <div class="container">
         <div id="calendar">
         </div>
+        <p class="text-mycolor1">※全員が完了しているタスクはやることカレンダーに表示されません</p>
     </div>
 
 </div>
@@ -79,6 +68,14 @@
                 today: '今月',
             },
             noEventsContent: 'タスクはありません',
+            
+            // 最大数を決められるが逆に見づらいため保留
+            // dayMaxEventRows: true,
+            // views: {
+            //     dayGrid: {
+            //         dayMaxEventRows: 6
+            //     }
+            // },
 
             dayCellContent: function (e) {
                 return e.dayNumberText.replace('日', '');
