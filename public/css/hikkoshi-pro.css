@@ -173,3 +173,9 @@ tr.clickable-row {
 .fc-event-title-container {
     cursor: pointer;
 }
+
+.fc-h-event {
+    background-color: #E6A4B4;
+    border: #E6A4B4;
+    border: #FFF8E3;
+}

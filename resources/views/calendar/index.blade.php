@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('head')    
-    <script src='https://cdn.jsdelivr.net/npm/fullcalendar-scheduler@6.1.15/index.global.min.js'></script>
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
     <script src="https://cdn.jsdelivr.net/npm/@fullcalendar/google-calendar@6.1.15/index.global.min.js"></script>
 @endsection
 
@@ -30,7 +30,7 @@
     <div class="container">
         <div id="calendar">
         </div>
-        <p class="text-mycolor1">※全員が完了しているタスクはやることカレンダーに表示されません</p>
+        <p class="text-mycolor1">※全員が完了しているタスクは、やることカレンダーに表示されません</p>
     </div>
 
 </div>
@@ -68,7 +68,7 @@
                 today: '今月',
             },
             noEventsContent: 'タスクはありません',
-            
+
             // 最大数を決められるが逆に見づらいため保留
             // dayMaxEventRows: true,
             // views: {

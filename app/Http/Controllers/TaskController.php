@@ -270,7 +270,7 @@ class TaskController extends Controller
             ];
         })->toArray();
 
-        Log::info($events);
+        // Log::info($events);  //storage/logs/laravel.log
 
         return $events;
     }
