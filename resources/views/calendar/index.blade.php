@@ -23,19 +23,40 @@
 
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item active" aria-current="page">やることカレンダー</li>
+            @if ($selectedSubUser)
+                <li class="breadcrumb-item"><a href="{{ route('calendar.index') }}">やることカレンダー</a></li>
+                <li class="breadcrumb-item active text-mycolor1" aria-current="page">{{ $selectedSubUser->nickname }}さんのやることカレンダー</li>
+            @else
+                <li class="breadcrumb-item active text-mycolor1" aria-current="page">やることカレンダー</li>
+            @endif
         </ol>
     </nav>
 
-    <div class="container">
+    <!-- サブユーザー選択フォーム -->
+    <form method="GET" action="{{ route('calendar.index') }}" id="subUserForm">
+        <div class="form-group">
+            <label for="sub_user_id">ユーザーを選択</label>
+            <select name="sub_user_id" id="sub_user_id" class="form-control" onchange="document.getElementById('subUserForm').submit();">
+                <option value="">すべてのユーザー</option>
+                @foreach ($subUsers as $subUser)
+                    <option value="{{ $subUser->id }}" {{ $selectedSubUserId == $subUser->id ? 'selected' : '' }}>
+                        {{ $subUser->nickname }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+    </form>
+
+    <div class="container mt-3">
         <div id="calendar">
         </div>
-        <p class="text-mycolor1">※全員が完了しているタスクは、やることカレンダーに表示されません</p>
+        <p class="text-mycolor1">※完了しているタスクは、やることカレンダーに表示されません</p>
     </div>
 
 </div>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        var subUserId = document.getElementById('sub_user_id').value;
         var calendarEl = document.getElementById('calendar');
         var calendar = new FullCalendar.Calendar(calendarEl, {
 
@@ -49,7 +70,7 @@
                     borderColor: '#ffffff00'
                 },
                 {
-                    url: '{{ route('calendar.getEvents') }}', //自分のタスク
+                    url: '{{ route('calendar.getEvents') }}' + '?sub_user_id=' + subUserId, //自分のタスク
                     className: 'my-events'
                 }
             ],

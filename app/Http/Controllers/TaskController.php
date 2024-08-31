@@ -93,6 +93,8 @@ class TaskController extends Controller
 
     public function store(Request $request)
     {
+        $selectedSubUserId = $request->input('sub_user_id');
+
         $validator = Validator::make($request->all(), [
             'title' => 'required|max:32',
             'description' => 'nullable|max:255',
@@ -142,11 +144,13 @@ class TaskController extends Controller
         Session::flash('success', 'タスクが作成されました。');
 
         //タスク一覧ページにリダイレクト
-        return response()->json(['redirect' => route('tasks.index')]);
+        return response()->json(['redirect' => route('tasks.index', ['sub_user_id' => $selectedSubUserId])]);
     }
 
     public function update(Request $request, Task $task)
     {
+        $selectedSubUserId = $request->input('sub_user_id');
+
         $validator = Validator::make($request->all(), [
             'title' => 'required|max:32',
             'description' => 'nullable|max:255',
@@ -209,8 +213,7 @@ class TaskController extends Controller
         Session::flash('success', 'タスクを更新しました。');
 
         //タスク一覧ページにリダイレクト
-        return response()->json(['redirect' => route('tasks.index')]);
-        // return redirect()->back()->with('success', 'タスクを更新しました。');
+        return response()->json(['redirect' => route('tasks.index', ['sub_user_id' => $selectedSubUserId])]);
     }
 
     public function destroy(Task $task)
@@ -232,12 +235,7 @@ class TaskController extends Controller
         return redirect()->back()->with('success', 'タスクの完了状態を変更しました。');
     }
 
-    public function calendar()
-    {
-        return view('calendar.index')->with('success', 'あれれ');
-    }
-
-    public function getEvents(Request $request)
+    public function calendar(Request $request)
     {
         $user = auth()->user();
         $subUsers = $user->subUsers;
@@ -247,14 +245,34 @@ class TaskController extends Controller
         // メインユーザーに関連するサブユーザーのIDを取得
         $subUserIds = $subUsers->pluck('id')->toArray();
 
-        // サブユーザーが少なくとも一人でも完了していない場合、そのタスクを取得する
-        $tasksQuery = Task::with('subUsers')
-            ->whereHas('subUsers', function ($query) use ($subUserIds) {
-                $query->whereIn('sub_user_id', $subUserIds);
-            })
-            ->whereHas('subUsers', function ($query) {
-                $query->where('completed', false);
-            });
+        return view('calendar.index', compact('subUsers', 'selectedSubUserId', 'selectedSubUser'));
+    }
+
+    public function getEvents(Request $request)
+    {
+        $user = auth()->user();
+        $subUsers = $user->subUsers;
+        $selectedSubUserId = $request->input('sub_user_id');
+
+        // メインユーザーに関連するサブユーザーのIDを取得
+        $subUserIds = $subUsers->pluck('id')->toArray();
+
+        if (is_null($selectedSubUserId)) {
+            // サブユーザーが少なくとも一人でも完了していない場合、そのタスクを取得する
+            $tasksQuery = Task::with('subUsers')
+                ->whereHas('subUsers', function ($query) use ($subUserIds) {
+                    $query->whereIn('sub_user_id', $subUserIds);
+                })
+                ->whereHas('subUsers', function ($query) {
+                    $query->where('completed', false);
+                });
+        } else {
+            $tasksQuery = Task::with('subUsers')
+                ->whereHas('subUsers', function ($query) use ($selectedSubUserId) {
+                    $query->where('sub_user_id', $selectedSubUserId)
+                        ->where('completed', false);
+                });
+        }
 
         $tasks = $tasksQuery->get();
 
@@ -269,8 +287,6 @@ class TaskController extends Controller
                 'end' => $eDate->format('Y-m-d'),
             ];
         })->toArray();
-
-        // Log::info($events);  //storage/logs/laravel.log
 
         return $events;
     }

@@ -46,6 +46,9 @@
                     </div>
                 </div>
                 
+                {{-- 選択中のサブユーザーを送信 --}}
+                <input type="hidden" name="sub_user_id" value="{{ $selectedSubUserId }}">
+                
                 <div class="modal-footer bg-mycolor3 text-mycolor1">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">閉じる</button>
                     <button type="submit" class="btn btn-danger btn-mycolor1">保存</button>
