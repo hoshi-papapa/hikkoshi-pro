@@ -137,9 +137,14 @@ tr.clickable-row {
 .fc-day.fc-day-sat{
     background-color: #d5e5f3;
 }
-.fc .fc-daygrid-day.fc-day-today{
+.fc .fc-daygrid-day.fc-day-today {
     border: solid #E6A4B4;
 }
+
+.movingDate {
+    display: none;
+}
+/* 引越し日の背景でasset使いたいのでそれはblade内に記載 */
 
 .fc-theme-standard td,
 .fc-theme-standard th {

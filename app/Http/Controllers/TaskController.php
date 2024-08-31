@@ -244,8 +244,9 @@ class TaskController extends Controller
 
         // メインユーザーに関連するサブユーザーのIDを取得
         $subUserIds = $subUsers->pluck('id')->toArray();
+        $plannedMovingDate = $user->planned_moving_date;
 
-        return view('calendar.index', compact('subUsers', 'selectedSubUserId', 'selectedSubUser'));
+        return view('calendar.index', compact('subUsers', 'selectedSubUserId', 'selectedSubUser', 'plannedMovingDate'));
     }
 
     public function getEvents(Request $request)

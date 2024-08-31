@@ -51,6 +51,7 @@
         <div id="calendar">
         </div>
         <p class="text-mycolor1">※完了しているタスクは、やることカレンダーに表示されません</p>
+        <p>ああああ{{$plannedMovingDate}}</p>
     </div>
 
 </div>
@@ -65,13 +66,16 @@
                 {
                     googleCalendarId: 'ja.japanese#holiday@group.v.calendar.google.com', //日本の休日
                     className: 'holidays',
-                    textColor: 'red',
-                    backgroundColor: '#ffffff00',
-                    borderColor: '#ffffff00'
                 },
                 {
                     url: '{{ route('calendar.getEvents') }}' + '?sub_user_id=' + subUserId, //自分のタスク
                     className: 'my-events'
+                },
+            ],
+            events: [
+                {
+                    start: '{{$plannedMovingDate}}', //引越予定日
+                    className: 'movingDate',
                 }
             ],
 
@@ -88,7 +92,6 @@
             buttonText: {
                 today: '今月',
             },
-            noEventsContent: 'タスクはありません',
 
             // 最大数を決められるが逆に見づらいため保留
             // dayMaxEventRows: true,
@@ -120,4 +123,13 @@
     });
 </script>
 
+<style>
+    .fc-daygrid-day:has(.movingDate) {
+    border: dotted #E6A4B4;
+    background-image: url('{{ asset('images/hikkoshibi2.png') }}');
+    background-size: cover; 
+    background-repeat: no-repeat; 
+    background-position: center; 
+}
+</style>
 @endsection
