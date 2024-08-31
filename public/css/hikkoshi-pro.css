@@ -137,10 +137,6 @@ tr.clickable-row {
 .fc-day.fc-day-sat{
     background-color: #d5e5f3;
 }
-/* .fc .fc-daygrid-day.fc-day-today .fc-daygrid-day-number{
-    background-color: #E6A4B4;
-    border-radius: 50%;
-} */
 .fc .fc-daygrid-day.fc-day-today{
     border: solid #E6A4B4;
 }
