@@ -51,7 +51,16 @@
         <div id="calendar">
         </div>
         <p class="text-mycolor1">※完了しているタスクは、やることカレンダーに表示されません</p>
-        <p>ああああ{{$plannedMovingDate}}</p>
+
+    </div>
+
+    <div class="breadcrumb mt-5">
+        <p class="breadcrumb-item active text-mycolor1">
+            <i class="fa-solid fa-circle-info"></i> カレンダーの見方
+        </p>
+        <div>
+            <img src="{{ asset('images/calendar_sample.png') }}" style="width: 100%;">
+        </div>
     </div>
 
 </div>
