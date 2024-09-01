@@ -51,15 +51,14 @@
         <div id="calendar">
         </div>
         <p class="text-mycolor1">※完了しているタスクは、やることカレンダーに表示されません</p>
-
     </div>
 
-    <div class="breadcrumb mt-5">
-        <p class="breadcrumb-item active text-mycolor1">
-            <i class="fa-solid fa-circle-info"></i> カレンダーの見方
-        </p>
+    <div class="mt-5 text-mycolor1 help-box">
+        <div class="mb-1">
+            <i class="fa-solid fa-circle-info"></i> カレンダーについて
+        </div>
         <div>
-            <img src="{{ asset('images/calendar_sample.png') }}" style="width: 100%;">
+            <img src="{{ asset('images/calendar_sample.png') }}" style="width: 100%; border: solid #4B2E2E 1px" class="my-1">
         </div>
     </div>
 

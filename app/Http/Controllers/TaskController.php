@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Log;
 use App\Models\SubUser;
 use App\Models\Task;
-use App\Models\SubUserTask;
 use Illuminate\Validation\Rule;
 use Carbon\Carbon;
 
@@ -26,18 +25,47 @@ class TaskController extends Controller
         // メインユーザーに関連するサブユーザーのIDを取得
         $subUserIds = $subUsers->pluck('id')->toArray();
 
-        // 条件に応じてタスクをフィルタリングし、関連するサブユーザーの情報をプリロードした状態でクエリを構築する
-        $tasksQuery = Task::with('subUsers')
-            ->whereHas('subUsers', function ($query) use ($subUserIds) {
-                $query->whereIn('sub_user_id', $subUserIds);
-            })
-            ->when($selectedSubUserId, function ($query) use ($selectedSubUserId) {
-                return $query->whereHas('subUsers', function ($query) use ($selectedSubUserId) {
-                    $query->where('sub_user_id', $selectedSubUserId);
+        //未完了のタスクを取得
+        if (is_null($selectedSubUserId)) {
+            // サブユーザーが少なくとも一人でも完了していない場合、そのタスクを取得する
+            $tasksQuery = Task::with('subUsers')
+                ->whereHas('subUsers', function ($query) use ($subUserIds) {
+                    $query->whereIn('sub_user_id', $subUserIds);
+                })
+                ->whereHas('subUsers', function ($query) {
+                    $query->where('completed', false);
                 });
-            });
-
+        } else {
+            $tasksQuery = Task::with('subUsers')
+                ->whereHas('subUsers', function ($query) use ($selectedSubUserId) {
+                    $query->where('sub_user_id', $selectedSubUserId)
+                        ->where('completed', false);
+                });
+        }
         $tasks = $tasksQuery->get();
+
+        //完了したタスクを取得
+        if (is_null($selectedSubUserId)) {
+            // サブユーザー全員が完了しているタスクを取得する
+            $completedTasksQuery = Task::with('subUsers')
+                ->whereHas('subUsers', function ($query) use ($subUserIds) {
+                    $query->whereIn('sub_user_id', $subUserIds);
+                })
+                ->whereDoesntHave('subUsers', function ($query) {
+                    $query->where('completed', false);
+                });
+        } else {
+            // 特定のサブユーザーで全員が完了しているタスクを取得する
+            $completedTasksQuery = Task::with('subUsers')
+                ->whereHas('subUsers', function ($query) use ($selectedSubUserId) {
+                    $query->where('sub_user_id', $selectedSubUserId);
+                })
+                ->whereDoesntHave('subUsers', function ($query) use ($selectedSubUserId) {
+                    $query->where('sub_user_id', $selectedSubUserId)
+                        ->where('completed', false);
+                });
+        }
+        $completedTasks = $completedTasksQuery->get();
 
         $plannedMovingDate = Carbon::parse($user->planned_moving_date)->startOfDay(); // ユーザーの引越予定日を取得し、日の最初に設定
 
@@ -55,6 +83,7 @@ class TaskController extends Controller
             'movingDay' => [],
             'oneWeekAfter' => [],
             'earlyAfterMoving' => [],
+            'completedTasks' => [],
         ];
 
         foreach ($tasks as $task) {
@@ -77,6 +106,9 @@ class TaskController extends Controller
             }
         }
 
+        foreach ($completedTasks as $task) {
+            $categorizedTasks['completedTasks'][] = $task;
+        }
 
         // 各カテゴリ内のタスクを終了日が若い順番に並び替える
         foreach ($categorizedTasks as $category => $tasks) {
@@ -88,7 +120,7 @@ class TaskController extends Controller
             $categorizedTasks[$category] = $tasks;
         }
 
-        return view('tasks.index', compact('tasks', 'categorizedTasks', 'subUsers', 'selectedSubUserId', 'selectedSubUser'));
+        return view('tasks.index', compact('categorizedTasks', 'subUsers', 'selectedSubUserId', 'selectedSubUser'));
     }
 
     public function store(Request $request)
@@ -279,7 +311,7 @@ class TaskController extends Controller
 
         $events = $tasks->map(function ($task) {
             $sDate = Carbon::parse($task->start_date);
-            $eDate = Carbon::parse($task->end_date);
+            $eDate = Carbon::parse($task->end_date)->addDay();
 
             return [
                 'title' => $task->title,

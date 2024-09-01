@@ -51,7 +51,7 @@
         </a>
     </div>
     <!-- タスク一覧表示 -->
-    @if (empty($tasks))
+    @if (empty($categorizedTasks))
         <p>タスクがありません。</p>
     @else
         @if (!empty($categorizedTasks['threeWeeksBefore']))
@@ -145,12 +145,58 @@
             @endforeach
         @endif
 
+        @if (!empty($categorizedTasks['completedTasks']))
+            <h4 class="mt-5">完了したタスク</h4>
+            @include('tasks.partials.task-box', ['tasks' => $categorizedTasks['completedTasks']])
+
+            @foreach ($categorizedTasks['completedTasks'] as $task)
+                {{-- 目標の編集用モーダル --}}
+                @include('modals.task-edit-modal', ['task' => $task])
+
+                {{-- 目標の削除用モーダル --}}
+                @include('modals.task-delete-modal', ['task' => $task])
+            @endforeach
+        @endif
+
     @endif
+
+    <div class="mt-5 text-mycolor1 help-box">
+        <div class="mb-1">
+            <i class="fa-solid fa-circle-info"></i> アイコンについて
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="card my-1 border-light-subtle">
+                    <i class="far fa-circle icon-help" style="font-size: 1.5rem;"></i>
+                    <div class="card-body">
+                        <p class="card-text" style="text-align: center;">誰も完了していないタスクです</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card my-1 border-light-subtle">
+                    <i class="fas fa-circle icon-help" style="font-size: 1.5rem;"></i>
+                    <div class="card-body">
+                        <p class="card-text" style="text-align: center;">誰かが完了していないタスクです</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card my-1 border-light-subtle">
+                    <i class="fas fa-check-circle icon-help" style="font-size: 1.5rem;"></i>
+                    <div class="card-body">
+                        <p class="card-text" style="text-align: center;">全員が完了しているタスクです</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-   
+    
         document.querySelectorAll('.editTaskForm').forEach(function(form){
             form.addEventListener('submit', function(event){
 

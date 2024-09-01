@@ -184,3 +184,13 @@ tr.clickable-row {
     border: #E6A4B4;
     border: #FFF8E3;
 }
+
+.icon-help{
+    margin: 20px auto 0px auto;
+}
+.help-box {
+    border: dotted #E6A4B4;
+    background-color: #FFF8E3;
+    border-radius: 30px;
+    padding: 30px;
+}
